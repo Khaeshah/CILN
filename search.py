@@ -89,28 +89,71 @@ def depthFirstSearch(problem):
     
     "*** YOUR CODE HERE ***"
     struct=util.Stack();
+    movimientos=util.Stack();
     visited=[];
 
-
     #problem, struct(stack), visited(list)
-    s=problem.getStartState(); #posicion inicial
-    #nodo,actions,cost
-    struct.push(s);
+    startState=problem.getStartState(); #posicion inicial
+    #nodo,accion,cost
+    struct.push((startState,[],[]));
+    movimientos.push([]);
     while not struct.isEmpty():
-        node=struct.pop(); # cojo un nodo
-
-        if problem.isGoalState(node):
+        tempNode = struct.pop(); # cojo un nodo temporal
+        tempAction = movimientos.pop();
+        nodePos = tempNode[0];
+        actions = tempNode[1];
+        cost = tempNode[2];
+        if problem.isGoalState(nodePos):
             print "lo hemos encontrado!"
-        #if node not in visited:
-        #   visited.append(node)
-        #  for node,actions,cost in problem.getSuccessors(node): # Para los nodos adyacentes
-        #     struct.push(node);
-                
- 
+            return tempAction;
+        if nodePos not in visited:
+            visited.append(nodePos)
+            for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
+                struct.push((nodePos,actions,cost));
+                """
+                print "acciones anteriores: " 
+                print tempAction
+                print "\n"
+                print "acciones nuevas: " 
+                print [actions]
+                print "\n"
+                """
+                movimientos.push(tempAction + [actions])
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
+    struct=util.Queue();
+    movimientos=util.Queue();
+    visited=[];
+
+    #problem, struct(stack), visited(list)
+    startState=problem.getStartState(); #posicion inicial
+    #nodo,accion,cost
+    struct.push((startState,[],[]));
+    movimientos.push([]);
+    while not struct.isEmpty():
+        tempNode = struct.pop(); # cojo un nodo temporal
+        tempAction = movimientos.pop();
+        nodePos = tempNode[0];
+        actions = tempNode[1];
+        cost = tempNode[2];
+        if problem.isGoalState(nodePos):
+            print "lo hemos encontrado!"
+            return tempAction;
+        if nodePos not in visited:
+            visited.append(nodePos)
+            for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
+                struct.push((nodePos,actions,cost));
+                """
+                print "acciones anteriores: " 
+                print tempAction
+                print "\n"
+                print "acciones nuevas: " 
+                print [actions]
+                print "\n"
+                """
+                movimientos.push(tempAction + [actions])
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
