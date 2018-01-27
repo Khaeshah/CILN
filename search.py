@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -86,7 +86,7 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    
+
     "*** YOUR CODE HERE ***"
     struct=util.Stack();
     movimientos=util.Stack();
@@ -111,10 +111,10 @@ def depthFirstSearch(problem):
             for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
                 struct.push((nodePos,actions,cost));
                 """
-                print "acciones anteriores: " 
+                print "acciones anteriores: "
                 print tempAction
                 print "\n"
-                print "acciones nuevas: " 
+                print "acciones nuevas: "
                 print [actions]
                 print "\n"
                 """
@@ -146,10 +146,10 @@ def breadthFirstSearch(problem):
             for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
                 struct.push((nodePos,actions,cost));
                 """
-                print "acciones anteriores: " 
+                print "acciones anteriores: "
                 print tempAction
                 print "\n"
-                print "acciones nuevas: " 
+                print "acciones nuevas: "
                 print [actions]
                 print "\n"
                 """
@@ -157,9 +157,44 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+# UCS utilitza una cua de prioritat. La prioritat es el cost cumulatiu cap a un node.
+# UCS dona al minim cost acumulat la maxima prioritat.
+# UCS retorna el primer cami trobat, no tots.
+# UCS retorna un cami optim en termes de cost.
+# UCS es el millor algoritmo actual que no utilitza heuristicas.
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
+    #Insert the root into the queue
+    queue = util.PriorityQueue();
+    movimientos = util.PriorityQueue();
+    visited = [];
+    startState=problem.getStartState(); #posicion inicial
+    queue.push([(startState,[],[]),0], 0); # Insertamos la prioridad junto al estado
+    movimientos.push([],0);
+    #While the queue is not empty
+    while not queue.isEmpty():
+        # Dequeue the maximum priority element from the queue
+        # (If priorities are same, alphabetically smaller path is chosen)
+        tempNode = queue.pop();
+        tempAction = movimientos.pop();
+
+        nodePos = tempNode[0][0];
+        action = tempNode[0][1];
+        cost = tempNode[0][2];
+
+        #If the path is ending in the goal state, print the path and exit
+        if problem.isGoalState(nodePos):
+            return tempAction;
+        # Afegim a visitats si no ho estava
+        if nodePos not in visited:
+            visited.append(nodePos);
+            for node,action,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
+                #Insert all the children of the dequeued element, with the cumulative costs as priority
+                queue.push([(node,action,cost),tempNode[1] + cost], tempNode[1] + cost)
+                movimientos.push(tempAction + [action], tempNode[1] + cost)
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
