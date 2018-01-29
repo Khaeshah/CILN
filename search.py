@@ -86,7 +86,6 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-
     "*** YOUR CODE HERE ***"
     struct=util.Stack();
     movimientos=util.Stack();
@@ -123,6 +122,7 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
     struct=util.Queue();
     movimientos=util.Queue();
     visited=[];
@@ -154,7 +154,6 @@ def breadthFirstSearch(problem):
                 print "\n"
                 """
                 movimientos.push(tempAction + [actions])
-    "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
 # UCS utilitza una cua de prioritat. La prioritat es el cost cumulatiu cap a un node.
@@ -165,7 +164,6 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-
     #Insert the root into the queue
     queue = util.PriorityQueue();
     movimientos = util.PriorityQueue();
@@ -194,7 +192,6 @@ def uniformCostSearch(problem):
                 #Insert all the children of the dequeued element, with the cumulative costs as priority
                 queue.push([(node,action,cost),tempNode[1] + cost], tempNode[1] + cost)
                 movimientos.push(tempAction + [action], tempNode[1] + cost)
-    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
