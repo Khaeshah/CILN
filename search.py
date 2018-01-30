@@ -86,29 +86,40 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
+
     "*** YOUR CODE HERE ***"
     struct=util.Stack();
     movimientos=util.Stack();
     visited=[];
 
-    #problem, struct(stack), visited(list)
+    
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
     movimientos.push([]);
+    # Mientras haya algo en la pila
     while not struct.isEmpty():
-        tempNode = struct.pop(); # cojo un nodo temporal
-        tempAction = movimientos.pop();
+        # cojo un nodo temporal de la pila
+        tempNode = struct.pop();
         nodePos = tempNode[0];
         actions = tempNode[1];
         cost = tempNode[2];
+        # cojo el ultimo movimiento
+        tempAction = movimientos.pop();
+        # si el nodo es goal
         if problem.isGoalState(nodePos):
             print "lo hemos encontrado!"
             return tempAction;
+        # Si nuevo nodo
         if nodePos not in visited:
+            # Anyadimos a visitados
             visited.append(nodePos)
-            for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
+            # Para los nodos adyacentes
+            for nodePos,actions,cost in problem.getSuccessors(nodePos): 
+                # Los anyadimos a la pila
                 struct.push((nodePos,actions,cost));
+
+                movimientos.push(tempAction + [actions]);
                 """
                 print "acciones anteriores: "
                 print tempAction
@@ -117,34 +128,43 @@ def depthFirstSearch(problem):
                 print [actions]
                 print "\n"
                 """
-                movimientos.push(tempAction + [actions])
+                
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
     struct=util.Queue();
     movimientos=util.Queue();
     visited=[];
 
-    #problem, struct(stack), visited(list)
+    
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
     movimientos.push([]);
+    # Mientras haya algo en la cola
     while not struct.isEmpty():
-        tempNode = struct.pop(); # cojo un nodo temporal
-        tempAction = movimientos.pop();
+        # cojo un nodo temporal de la cola
+        tempNode = struct.pop();
         nodePos = tempNode[0];
         actions = tempNode[1];
         cost = tempNode[2];
+        # cojo el ultimo movimiento
+        tempAction = movimientos.pop();
+        # si el nodo es goal
         if problem.isGoalState(nodePos):
             print "lo hemos encontrado!"
             return tempAction;
+        # Si nuevo nodo
         if nodePos not in visited:
+            # Anyadimos a visitados
             visited.append(nodePos)
-            for nodePos,actions,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
+            # Para los nodos adyacentes
+            for nodePos,actions,cost in problem.getSuccessors(nodePos): 
+                # Los encolamos
                 struct.push((nodePos,actions,cost));
+
+                movimientos.push(tempAction + [actions]);
                 """
                 print "acciones anteriores: "
                 print tempAction
@@ -153,7 +173,7 @@ def breadthFirstSearch(problem):
                 print [actions]
                 print "\n"
                 """
-                movimientos.push(tempAction + [actions])
+                
     util.raiseNotDefined()
 
 # UCS utilitza una cua de prioritat. La prioritat es el cost cumulatiu cap a un node.
@@ -164,6 +184,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+
     #Insert the root into the queue
     queue = util.PriorityQueue();
     movimientos = util.PriorityQueue();
@@ -173,25 +194,27 @@ def uniformCostSearch(problem):
     movimientos.push([],0);
     #While the queue is not empty
     while not queue.isEmpty():
-        # Dequeue the maximum priority element from the queue
-        # (If priorities are same, alphabetically smaller path is chosen)
+        # Coger nodo con mayor prioridad
         tempNode = queue.pop();
-        tempAction = movimientos.pop();
 
         nodePos = tempNode[0][0];
         action = tempNode[0][1];
         cost = tempNode[0][2];
-
-        #If the path is ending in the goal state, print the path and exit
+        
+        #Coger ultimo movimiento
+        tempAction = movimientos.pop();
+        # Si el nodo es goal
         if problem.isGoalState(nodePos):
             return tempAction;
-        # Afegim a visitats si no ho estava
+        # Anyadimos a visitados
         if nodePos not in visited:
             visited.append(nodePos);
-            for node,action,cost in problem.getSuccessors(nodePos): # Para los nodos adyacentes
-                #Insert all the children of the dequeued element, with the cumulative costs as priority
+            # Para los nodos adyacentes no visitados
+            for node,action,cost in problem.getSuccessors(nodePos): 
+                # Los anyadimos con prioridad = custo acoumulado
                 queue.push([(node,action,cost),tempNode[1] + cost], tempNode[1] + cost)
                 movimientos.push(tempAction + [action], tempNode[1] + cost)
+    
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
