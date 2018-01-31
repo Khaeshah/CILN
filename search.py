@@ -31,6 +31,7 @@ class SearchProblem:
         """
         Returns the start state for the search problem.
         """
+        
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -88,92 +89,123 @@ def depthFirstSearch(problem):
     """
 
     "*** YOUR CODE HERE ***"
+    
     struct=util.Stack();
-    movimientos=util.Stack();
+    setCaminos=[];
     visited=[];
 
     
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
-    movimientos.push([]);
+    setCaminos.append([]);
     # Mientras haya algo en la pila
-    while not struct.isEmpty():
-        # cojo un nodo temporal de la pila
-        tempNode = struct.pop();
-        nodePos = tempNode[0];
-        actions = tempNode[1];
-        cost = tempNode[2];
-        # cojo el ultimo movimiento
-        tempAction = movimientos.pop();
-        # si el nodo es goal
+    i = 0;
+
+    while not struct.isEmpty():    
+    
+    # Cojo un nodo temporal de la pila
+        actualNode = struct.pop();
+        nodePos = actualNode[0]; # POSICION
+        actions = actualNode[1]; # ACCION
+        cost = actualNode[2]; # COSTE
+
+    
+        # Ultimo set de setCaminos en lista setCaminos
+        actualAction = setCaminos.pop();
+        print "Actual Actions: ";        
+        print actualAction;
+        print "Posicion del nodo: ";        
+        print nodePos;
+        print "Accion que hemos hecho: ";        
+        print actions;
+            # Si tenim goal
         if problem.isGoalState(nodePos):
-            print "lo hemos encontrado!"
-            return tempAction;
+            print "TROBAT! Accions per arribar al objectiu: ";
+            print actualAction;
+            return actualAction;
+        
+        j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
             visited.append(nodePos)
             # Para los nodos adyacentes
-            for nodePos,actions,cost in problem.getSuccessors(nodePos): 
+            for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Los anyadimos a la pila
                 struct.push((nodePos,actions,cost));
-
-                movimientos.push(tempAction + [actions]);
-                """
-                print "acciones anteriores: "
-                print tempAction
-                print "\n"
-                print "acciones nuevas: "
-                print [actions]
-                print "\n"
-                """
-                
+                #Aniadimos set de setCaminos actual, movs +  accions
+                setCaminos.append(actualAction + [actions]);
+                print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                j = j+1;
+        i = i + 1;
+        print "\n"
     util.raiseNotDefined()
+    """
+    print "acciones anteriores: "
+    print actualAction
+    print "\n"
+    print "acciones nuevas: "
+    print [actions]
+    print "\n"
+    """
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
+    
     struct=util.Queue();
-    movimientos=util.Queue();
+    setCaminos= util.Queue();
     visited=[];
 
     
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
-    movimientos.push([]);
-    # Mientras haya algo en la cola
-    while not struct.isEmpty():
-        # cojo un nodo temporal de la cola
-        tempNode = struct.pop();
-        nodePos = tempNode[0];
-        actions = tempNode[1];
-        cost = tempNode[2];
-        # cojo el ultimo movimiento
-        tempAction = movimientos.pop();
-        # si el nodo es goal
+    setCaminos.push([]);
+    # Mientras haya algo en la pila
+    i = 0;
+
+    while not struct.isEmpty():    
+    
+    # Cojo un nodo temporal de la pila
+        actualNode = struct.pop();
+        nodePos = actualNode[0]; # POSICION
+        actions = actualNode[1]; # ACCION
+        cost = actualNode[2]; # COSTE
+
+    
+        # Ultimo set de setCaminos en lista setCaminos
+        actualAction = setCaminos.pop();
+        print "Actual Actions: ";        
+        print actualAction;
+        print "Posicion del nodo: ";        
+        print nodePos;
+        print "Accion que hemos hecho: ";        
+        print actions;
+            # Si tenim goal
         if problem.isGoalState(nodePos):
-            print "lo hemos encontrado!"
-            return tempAction;
+            print "TROBAT! Accions per arribar al objectiu: ";
+            print actualAction;
+            return actualAction;
+        
+        j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
             visited.append(nodePos)
             # Para los nodos adyacentes
-            for nodePos,actions,cost in problem.getSuccessors(nodePos): 
-                # Los encolamos
+            for nodePos,actions,cost in problem.getSuccessors(nodePos):
+                # Los anyadimos a la pila
                 struct.push((nodePos,actions,cost));
-
-                movimientos.push(tempAction + [actions]);
-                """
-                print "acciones anteriores: "
-                print tempAction
-                print "\n"
-                print "acciones nuevas: "
-                print [actions]
-                print "\n"
-                """
-                
+                #Aniadimos set de setCaminos actual, movs +  accions
+                setCaminos.push(actualAction + [actions]);
+                print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                j = j+1;
+        i = i + 1;
+        print "\n"
+    util.raiseNotDefined()
     util.raiseNotDefined()
 
 # UCS utilitza una cua de prioritat. La prioritat es el cost cumulatiu cap a un node.
@@ -182,40 +214,58 @@ def breadthFirstSearch(problem):
 # UCS retorna un cami optim en termes de cost.
 # UCS es el millor algoritmo actual que no utilitza heuristicas.
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    struct=util.PriorityQueue();
+    setCaminos= util.PriorityQueue();
+    visited=[];
 
-    #Insert the root into the queue
-    queue = util.PriorityQueue();
-    movimientos = util.PriorityQueue();
-    visited = [];
-    startState=problem.getStartState(); #posicion inicial
-    queue.push([(startState,[],[]),0], 0); # Insertamos la prioridad junto al estado
-    movimientos.push([],0);
-    #While the queue is not empty
-    while not queue.isEmpty():
-        # Coger nodo con mayor prioridad
-        tempNode = queue.pop();
-
-        nodePos = tempNode[0][0];
-        action = tempNode[0][1];
-        cost = tempNode[0][2];
-        
-        #Coger ultimo movimiento
-        tempAction = movimientos.pop();
-        # Si el nodo es goal
-        if problem.isGoalState(nodePos):
-            return tempAction;
-        # Anyadimos a visitados
-        if nodePos not in visited:
-            visited.append(nodePos);
-            # Para los nodos adyacentes no visitados
-            for node,action,cost in problem.getSuccessors(nodePos): 
-                # Los anyadimos con prioridad = custo acoumulado
-                queue.push([(node,action,cost),tempNode[1] + cost], tempNode[1] + cost)
-                movimientos.push(tempAction + [action], tempNode[1] + cost)
     
-    util.raiseNotDefined()
+    startState=problem.getStartState(); #posicion inicial
+    #nodo,accion,cost
+    struct.push([(startState,[],[]),0],0);
+    setCaminos.push([],0);
+    # Mientras haya algo en la pila
+    i = 0;
+
+    while not struct.isEmpty():    
+    
+    # Cojo un nodo temporal de la pila
+        actualNode = struct.pop();
+        nodePos = actualNode[0][0]; # POSICION
+        actions = actualNode[0][1]; # ACCION
+        cost = actualNode[0][2]; # COSTE
+
+    
+        # Ultimo set de setCaminos en lista setCaminos
+        actualAction = setCaminos.pop();
+
+            # Si tenim goal
+        if problem.isGoalState(nodePos):
+            print "TROBAT! Accions per arribar al objectiu: ";
+            print actualAction;
+            return actualAction;
+        
+        j = 0;
+        # Si nuevo nodo
+        if nodePos not in visited:
+            # Anyadimos a visitados
+            visited.append(nodePos)
+            # Para los nodos adyacentes
+            for nodePos,actions,cost in problem.getSuccessors(nodePos):
+                # Los anyadimos a la pila
+                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost );
+                print "HHHHHHHHHHHHHHHH"
+              
+
+                print actualNode[1] + cost;
+                print "AAAAAAAAAAAAAAA"
+                #Aniadimos set de setCaminos actual, movs +  accions
+                setCaminos.push(actualAction + [actions], actualNode[1] + cost);
+                #print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                j = j+1;
+        i = i + 1;
+        print "\n"
+    util.raiseNotDefined()    
 
 def nullHeuristic(state, problem=None):
     """
@@ -227,7 +277,52 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    struct=util.PriorityQueue();
+    setCaminos= util.PriorityQueue();
+    visited=[];
+
+    
+    startState=problem.getStartState(); #posicion inicial
+    #nodo,accion,cost
+    struct.push([(startState,[],[]),0],0);
+    setCaminos.push([],0);
+    # Mientras haya algo en la pila
+    i = 0;
+
+    while not struct.isEmpty():    
+    
+    # Cojo un nodo temporal de la pila
+        actualNode = struct.pop();
+        nodePos = actualNode[0][0]; # POSICION
+        actions = actualNode[0][1]; # ACCION
+        cost = actualNode[0][2]; # COSTE
+
+    
+        # Ultimo set de setCaminos en lista setCaminos
+        actualAction = setCaminos.pop();
+
+            # Si tenim goal
+        if problem.isGoalState(nodePos):
+            print "TROBAT! Accions per arribar al objectiu: ";
+            print actualAction;
+            return actualAction;
+        
+        j = 0;
+        # Si nuevo nodo
+        if nodePos not in visited:
+            # Anyadimos a visitados
+            visited.append(nodePos)
+            # Para los nodos adyacentes
+            for nodePos,actions,cost in problem.getSuccessors(nodePos):
+                # Los anyadimos a la pila
+                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost + heuristic(nodePos,problem));
+                #Aniadimos set de setCaminos actual, movs +  accions
+                setCaminos.push(actualAction + [actions], actualNode[1] + cost + heuristic(nodePos,problem));
+                #print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                j = j+1;
+        i = i + 1;
+        print "\n"
+    util.raiseNotDefined()  
 
 
 # Abbreviations
