@@ -159,7 +159,6 @@ def breadthFirstSearch(problem):
     setCaminos= util.Queue();
     visited=[];
 
-    #removing test comment
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
@@ -218,53 +217,38 @@ def uniformCostSearch(problem):
     struct=util.PriorityQueue();
     setCaminos= util.PriorityQueue();
     visited=[];
-
-
+    
     startState=problem.getStartState(); #posicion inicial
-    #nodo,accion,cost
-    struct.push([(startState,[],[]),0],0);
+    #[nodo,accion,cost], coste acumulado
+    struct.push([(startState,[],[]),0],0); # Node i coste, con el acumulativo
     setCaminos.push([],0);
-    # Mientras haya algo en la pila
-    i = 0;
 
     while not struct.isEmpty():
-
-    # Cojo un nodo temporal de la pila
+        # Cojo un nodo
         actualNode = struct.pop();
         nodePos = actualNode[0][0]; # POSICION
         actions = actualNode[0][1]; # ACCION
         cost = actualNode[0][2]; # COSTE
 
-
-        # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
 
-            # Si tenim goal
+        # Si es goalstate:
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
             print actualAction;
             return actualAction;
 
-        j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
             visited.append(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
-                # Los anyadimos a la pila
-                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost );
-                print "HHHHHHHHHHHHHHHH"
-
-
-                print actualNode[1] + cost;
-                print "AAAAAAAAAAAAAAA"
-                #Aniadimos set de setCaminos actual, movs +  accions
+                # Actualnode contiene el coste acumulado
+                # cost es el coste que vemos para ir a otro nodo
+                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost);
                 setCaminos.push(actualAction + [actions], actualNode[1] + cost);
-                #print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
-                j = j+1;
-        i = i + 1;
-        print "\n"
+        #print "\n"
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
