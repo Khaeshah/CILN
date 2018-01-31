@@ -155,11 +155,11 @@ def breadthFirstSearch(problem):
 
     struct = util.Queue();
     setCaminos = util.Queue();
-    visited = set();
+    visited = [];
 
     startState = problem.getStartState(); #posicion inicial
     #nodo,accion,cost
-    struct.push((startState,[],[]));
+    struct.push((startState,"Stop",0));
     setCaminos.push([]);
     # Mientras haya algo en la pila
     i = 0;
@@ -191,7 +191,7 @@ def breadthFirstSearch(problem):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.add(nodePos)
+            visited.append(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Los anyadimos a la pila

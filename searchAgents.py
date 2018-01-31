@@ -295,6 +295,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        # Retornem la start position juntament amb la posicio dels corners
+        return (self.startingPosition, [self.corners[0], self.corners[1], self.corners[2], self.corners[3]]);
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,6 +304,8 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        # Si no tenim mes objectius, hem acabat.
+        return len(state[1]) == 0
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -323,8 +327,28 @@ class CornersProblem(search.SearchProblem):
             #   dx, dy = Actions.directionToVector(action)
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
-
             "*** YOUR CODE HERE ***"
+            x,y = state[0];
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty];
+            # Si no es pared
+            if not self.walls[nextx][nexty]:
+                nextPos = (nextx,nexty);
+                # Operador [:] fa una copia, per evitar modificar alguna cosa per referencia
+                goalsRemaining = state[1][:];
+                # goalsRemaining = state[1][:];
+
+                # Si la seguent posicio es un goal, eliminem aquest goal de la llista
+                if nextPos in goalsRemaining:
+                    goalsRemaining.remove(nextPos);
+
+                # Creem nou successor
+                nextState = (nextPos,goalsRemaining);
+                cost = 1;
+
+                #Retornem el nou successor. (Posicio, goals), accio, cost
+                successors.append( ( ((nextx, nexty), goalsRemaining), action, 1) )
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
