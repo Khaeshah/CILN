@@ -159,7 +159,7 @@ def breadthFirstSearch(problem):
     setCaminos= util.Queue();
     visited=[];
 
-    #test comment
+    #removing test comment
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
