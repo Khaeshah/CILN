@@ -31,7 +31,7 @@ class SearchProblem:
         """
         Returns the start state for the search problem.
         """
-        
+
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -89,12 +89,12 @@ def depthFirstSearch(problem):
     """
 
     "*** YOUR CODE HERE ***"
-    
+
     struct=util.Stack();
     setCaminos=[];
     visited=[];
 
-    
+
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
@@ -102,29 +102,29 @@ def depthFirstSearch(problem):
     # Mientras haya algo en la pila
     i = 0;
 
-    while not struct.isEmpty():    
-    
+    while not struct.isEmpty():
+
     # Cojo un nodo temporal de la pila
         actualNode = struct.pop();
         nodePos = actualNode[0]; # POSICION
         actions = actualNode[1]; # ACCION
         cost = actualNode[2]; # COSTE
 
-    
+
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
-        print "Actual Actions: ";        
+        print "Actual Actions: ";
         print actualAction;
-        print "Posicion del nodo: ";        
+        print "Posicion del nodo: ";
         print nodePos;
-        print "Accion que hemos hecho: ";        
+        print "Accion que hemos hecho: ";
         print actions;
             # Si tenim goal
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
             print actualAction;
             return actualAction;
-        
+
         j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
@@ -154,12 +154,12 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    
+
     struct=util.Queue();
     setCaminos= util.Queue();
     visited=[];
 
-    
+    #test comment
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
@@ -167,29 +167,29 @@ def breadthFirstSearch(problem):
     # Mientras haya algo en la pila
     i = 0;
 
-    while not struct.isEmpty():    
-    
+    while not struct.isEmpty():
+
     # Cojo un nodo temporal de la pila
         actualNode = struct.pop();
         nodePos = actualNode[0]; # POSICION
         actions = actualNode[1]; # ACCION
         cost = actualNode[2]; # COSTE
 
-    
+
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
-        print "Actual Actions: ";        
+        print "Actual Actions: ";
         print actualAction;
-        print "Posicion del nodo: ";        
+        print "Posicion del nodo: ";
         print nodePos;
-        print "Accion que hemos hecho: ";        
+        print "Accion que hemos hecho: ";
         print actions;
             # Si tenim goal
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
             print actualAction;
             return actualAction;
-        
+
         j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
@@ -219,7 +219,7 @@ def uniformCostSearch(problem):
     setCaminos= util.PriorityQueue();
     visited=[];
 
-    
+
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push([(startState,[],[]),0],0);
@@ -227,15 +227,15 @@ def uniformCostSearch(problem):
     # Mientras haya algo en la pila
     i = 0;
 
-    while not struct.isEmpty():    
-    
+    while not struct.isEmpty():
+
     # Cojo un nodo temporal de la pila
         actualNode = struct.pop();
         nodePos = actualNode[0][0]; # POSICION
         actions = actualNode[0][1]; # ACCION
         cost = actualNode[0][2]; # COSTE
 
-    
+
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
 
@@ -244,7 +244,7 @@ def uniformCostSearch(problem):
             print "TROBAT! Accions per arribar al objectiu: ";
             print actualAction;
             return actualAction;
-        
+
         j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
@@ -255,7 +255,7 @@ def uniformCostSearch(problem):
                 # Los anyadimos a la pila
                 struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost );
                 print "HHHHHHHHHHHHHHHH"
-              
+
 
                 print actualNode[1] + cost;
                 print "AAAAAAAAAAAAAAA"
@@ -265,7 +265,7 @@ def uniformCostSearch(problem):
                 j = j+1;
         i = i + 1;
         print "\n"
-    util.raiseNotDefined()    
+    util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -281,7 +281,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     setCaminos= util.PriorityQueue();
     visited=[];
 
-    
+
     startState=problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push([(startState,[],[]),0],0);
@@ -289,15 +289,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     # Mientras haya algo en la pila
     i = 0;
 
-    while not struct.isEmpty():    
-    
+    while not struct.isEmpty():
+
     # Cojo un nodo temporal de la pila
         actualNode = struct.pop();
         nodePos = actualNode[0][0]; # POSICION
         actions = actualNode[0][1]; # ACCION
         cost = actualNode[0][2]; # COSTE
 
-    
+
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
 
@@ -306,7 +306,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             print "TROBAT! Accions per arribar al objectiu: ";
             print actualAction;
             return actualAction;
-        
+
         j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
@@ -322,7 +322,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 j = j+1;
         i = i + 1;
         print "\n"
-    util.raiseNotDefined()  
+    util.raiseNotDefined()
 
 
 # Abbreviations
