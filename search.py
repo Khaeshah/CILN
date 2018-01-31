@@ -90,12 +90,11 @@ def depthFirstSearch(problem):
 
     "*** YOUR CODE HERE ***"
 
-    struct=util.Stack();
-    setCaminos=[];
-    visited=[];
+    struct = util.Stack();
+    setCaminos = [];
+    visited = set();
 
-
-    startState=problem.getStartState(); #posicion inicial
+    startState = problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
     setCaminos.append([]);
@@ -109,7 +108,6 @@ def depthFirstSearch(problem):
         nodePos = actualNode[0]; # POSICION
         actions = actualNode[1]; # ACCION
         cost = actualNode[2]; # COSTE
-
 
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
@@ -129,7 +127,7 @@ def depthFirstSearch(problem):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.append(nodePos)
+            visited.add(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Los anyadimos a la pila
@@ -155,11 +153,11 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    struct=util.Queue();
-    setCaminos= util.Queue();
-    visited=[];
+    struct = util.Queue();
+    setCaminos = util.Queue();
+    visited = set();
 
-    startState=problem.getStartState(); #posicion inicial
+    startState = problem.getStartState(); #posicion inicial
     #nodo,accion,cost
     struct.push((startState,[],[]));
     setCaminos.push([]);
@@ -193,7 +191,7 @@ def breadthFirstSearch(problem):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.append(nodePos)
+            visited.add(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Los anyadimos a la pila
@@ -214,9 +212,9 @@ def breadthFirstSearch(problem):
 # UCS es el millor algoritmo actual que no utilitza heuristicas.
 def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
-    struct=util.PriorityQueue();
-    setCaminos= util.PriorityQueue();
-    visited=[];
+    struct = util.PriorityQueue();
+    setCaminos = util.PriorityQueue();
+    visited = set();
 
     startState=problem.getStartState(); #posicion inicial
     #[nodo,accion,cost], coste acumulado
@@ -241,7 +239,7 @@ def uniformCostSearch(problem):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.append(nodePos)
+            visited.add(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
@@ -261,9 +259,9 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    struct=util.PriorityQueue();
-    setCaminos= util.PriorityQueue();
-    visited=[];
+    struct = util.PriorityQueue();
+    setCaminos = util.PriorityQueue();
+    visited = set();
 
     startState=problem.getStartState(); #posicion inicial
     #[nodo,accion,cost], coste acumulado
@@ -288,7 +286,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.append(nodePos)
+            visited.add(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
