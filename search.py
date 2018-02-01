@@ -261,7 +261,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     struct = util.PriorityQueue();
     setCaminos = util.PriorityQueue();
-    visited = set();
+    visited = [];
 
     startState=problem.getStartState(); #posicion inicial
     #[nodo,accion,cost], coste acumulado
@@ -286,7 +286,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Si nuevo nodo
         if nodePos not in visited:
             # Anyadimos a visitados
-            visited.add(nodePos)
+            visited.append(nodePos)
             # Para los nodos adyacentes
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
