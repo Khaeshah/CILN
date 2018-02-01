@@ -217,7 +217,7 @@ def uniformCostSearch(problem):
     visited = set();
 
     startState=problem.getStartState(); #posicion inicial
-    #[nodo,accion,cost], coste acumulado
+    #           [pos,accion,cost], coste acumulado
     struct.push([(startState,[],[]),0],0); # Node i coste, con el acumulativo
     setCaminos.push([],0);
 
@@ -244,9 +244,14 @@ def uniformCostSearch(problem):
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
                 # cost es el coste que vemos para ir a otro nodo
-                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost);
-                setCaminos.push(actualAction + [actions], actualNode[1] + cost);
+                cumulativeCost = actualNode[1] + cost;
+
+		# 	   (        [nodo]         ,  coste      , coste acumulao) 
+                struct.push([(nodePos,actions,cost), cumulativeCost ], cumulativeCost);
+		#	       (   set de acciones      ,  coste acumulado  )
+                setCaminos.push(actualAction + [actions], cumulativeCost    );
         #print "\n"
+	
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -291,8 +296,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
                 # cost es el coste que vemos para ir a otro nodo
-                struct.push([(nodePos,actions,cost), actualNode[1] + cost], actualNode[1] + cost + heuristic(nodePos,problem));
-                setCaminos.push(actualAction + [actions], actualNode[1] + cost + heuristic(nodePos,problem));
+
+		cumulativeCost = actualNode[1] + cost + heuristic(nodePos,problem);
+		# 	   (        [nodo]         ,  coste      , coste acumula + heuristik) 
+                struct.push([(nodePos,actions,cost), actualNode[1] + cost], cumulativeCost);
+		#	       (   set de acciones      ,  coste acumulado  )
+                setCaminos.push(actualAction + [actions], cumulativeCost    );
         #print "\n"
     util.raiseNotDefined()
 

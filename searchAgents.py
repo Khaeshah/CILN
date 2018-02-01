@@ -305,6 +305,7 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         # Si no tenim mes objectius, hem acabat.
+	
         return len(state[1]) == 0
         util.raiseNotDefined()
 
@@ -335,20 +336,18 @@ class CornersProblem(search.SearchProblem):
             # Si no es pared
             if not self.walls[nextx][nexty]:
                 nextPos = (nextx,nexty);
+
                 # Operador [:] fa una copia, per evitar modificar alguna cosa per referencia
                 goalsRemaining = state[1][:];
-                # goalsRemaining = state[1][:];
 
                 # Si la seguent posicio es un goal, eliminem aquest goal de la llista
                 if nextPos in goalsRemaining:
                     goalsRemaining.remove(nextPos);
 
                 # Creem nou successor
-                nextState = (nextPos,goalsRemaining);
                 cost = 1;
-
                 #Retornem el nou successor. (Posicio, goals), accio, cost
-                successors.append( ( ((nextx, nexty), goalsRemaining), action, 1) )
+                successors.append( ( ((nextx, nexty), goalsRemaining), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
