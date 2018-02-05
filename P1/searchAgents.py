@@ -305,7 +305,7 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         # Si no tenim mes objectius, hem acabat.
-	
+
         return len(state[1]) == 0
         util.raiseNotDefined()
 
@@ -379,37 +379,52 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
+# These are the walls of the maze, as a Grid (game.py)
     "*** YOUR CODE HERE ***"
-    heuristic = 0
-    cornersLeft = state[1][:]
-    referencePoint = state[0]
+    heuristica = 0
+    # Objectius
+    goalsRemaining = state[1][:];
+    posicio = state[0]
+    # Mentre tinguem objectius
+    while (len(goalsRemaining) > 0):
+        #print "Posicio actual: " + str(posicio);
+        # Selecciono l'objectiu mes proper i calculo heuristica
+        objectiuMesProper = getObjectiu(posicio,goalsRemaining);
+        # Calculo la manhattan distance al meu objectiu actual
+        heuristica += manhattanDistance(posicio, objectiuMesProper);
+        # Actualitzo la posicio al goal i elimino el que ja he mirat
+        posicio = objectiuMesProper;
+        goalsRemaining.remove(objectiuMesProper)
+        #print "Heuristica temporal mentre segueixo buscant: " + str(heuristica);
+    #print "Heuristica retornada: " + str(heuristica);
+    return heuristica
 
-    while len(cornersLeft) > 0:
-  	     closestCorner = closestPoint(referencePoint, cornersLeft)
-  	     heuristic += euclidieanDistance(referencePoint, closestCorner)
-  	     referencePoint = closestCorner
-  	     cornersLeft.remove(closestCorner)
+def getObjectiu (posicio, objectius):
+    # Seleccionem el primer objectiu i calculem el seu cost heuristic.
+    objectiuMesProper = objectius[0]
+    costProper = manhattanDistance(posicio, objectiuMesProper)
+    #print "COSTPROPER: " + str(costProper)
+    # Agafem candidats a partir del primer, que ja hem calculat.
+    for objectiu in objectius[1:]:
+        cost = manhattanDistance(posicio, objectiu)
+        #print "posicio: " + str(posicio);
+        #print "objectiu: " + str(objectiu);
+        # Si tenim un cost mes gran, actualitzem els costs i objectiu
+        if cost < costProper:
+            #print "Nou COSTPROPER = " + str(cost);
+            #print "Nou ObjectiuMesProper: " + str(objectiu);
+            costProper = cost
+            objectiuMesProper = objectiu
+    #print "Retorno objectiu mes proper: " + str(objectiuMesProper)
+    return objectiuMesProper
 
-    return heuristic
+def manhattanDistance (xy1, xy2):
+    # Euclidean nos expande mas nodos, la hemos descartado probandola.
+    # Euclidean: Take the square root of the sum of the squares of the differences of the coordinates.
+    # return ((xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
+    # Manhattan: Take the sum of the absolute values of the differences of the coordinates.
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
-def closestPoint (fromPoint, candidatesList):
-    if len(candidatesList) == 0:
-  	return None
-
-    closestCorner = candidatesList[0]
-    closestCost = euclidieanDistance(fromPoint, closestCorner)
-    for candidate in candidatesList[1:]:
-        thisCost = euclidieanDistance(fromPoint, candidate)
-        if closestCost > thisCost:
-            closestCost = thisCost
-            closestCorner = candidate
-    return closestCorner
-
-def euclidieanDistance (pointA, pointB):
-    return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

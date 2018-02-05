@@ -99,11 +99,12 @@ def depthFirstSearch(problem):
     struct.push((startState,[],[]));
     setCaminos.append([]);
     # Mientras haya algo en la pila
+    # Contador de debug
     i = 0;
 
     while not struct.isEmpty():
 
-    # Cojo un nodo temporal de la pila
+        # Cojo un nodo temporal de la pila
         actualNode = struct.pop();
         nodePos = actualNode[0]; # POSICION
         actions = actualNode[1]; # ACCION
@@ -111,18 +112,20 @@ def depthFirstSearch(problem):
 
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
+        """
         print "Actual Actions: ";
         print actualAction;
         print "Posicion del nodo: ";
         print nodePos;
         print "Accion que hemos hecho: ";
         print actions;
+        """
             # Si tenim goal
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
-            print actualAction;
+            #print actualAction;
             return actualAction;
-
+        # contador per fer debug
         j = 0;
         # Si nuevo nodo
         if nodePos not in visited:
@@ -134,10 +137,11 @@ def depthFirstSearch(problem):
                 struct.push((nodePos,actions,cost));
                 #Aniadimos set de setCaminos actual, movs +  accions
                 setCaminos.append(actualAction + [actions]);
-                print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                #print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+
                 j = j+1;
         i = i + 1;
-        print "\n"
+        #print "\n"
     util.raiseNotDefined()
     """
     print "acciones anteriores: "
@@ -175,16 +179,18 @@ def breadthFirstSearch(problem):
 
         # Ultimo set de setCaminos en lista setCaminos
         actualAction = setCaminos.pop();
+        """
         print "Actual Actions: ";
         print actualAction;
         print "Posicion del nodo: ";
         print nodePos;
         print "Accion que hemos hecho: ";
         print actions;
+        """
             # Si tenim goal
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
-            print actualAction;
+            #print actualAction;
             return actualAction;
 
         j = 0;
@@ -198,10 +204,10 @@ def breadthFirstSearch(problem):
                 struct.push((nodePos,actions,cost));
                 #Aniadimos set de setCaminos actual, movs +  accions
                 setCaminos.push(actualAction + [actions]);
-                print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
+                #print "Cas: "+ str(i)+ " Succ: " + str(j) + " " + str(actions);
                 j = j+1;
         i = i + 1;
-        print "\n"
+        #print "\n"
     util.raiseNotDefined()
     util.raiseNotDefined()
 
@@ -233,7 +239,7 @@ def uniformCostSearch(problem):
         # Si es goalstate:
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
-            print actualAction;
+            #print actualAction;
             return actualAction;
 
         # Si nuevo nodo
@@ -246,12 +252,12 @@ def uniformCostSearch(problem):
                 # cost es el coste que vemos para ir a otro nodo
                 cumulativeCost = actualNode[1] + cost;
 
-		# 	   (        [nodo]         ,  coste      , coste acumulao) 
+		        #  (        [nodo]         ,  coste      , coste acumulao)
                 struct.push([(nodePos,actions,cost), cumulativeCost ], cumulativeCost);
-		#	       (   set de acciones      ,  coste acumulado  )
+                #	       (   set de acciones      ,  coste acumulado  )
                 setCaminos.push(actualAction + [actions], cumulativeCost    );
         #print "\n"
-	
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -285,7 +291,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         # Si es goalstate:
         if problem.isGoalState(nodePos):
             print "TROBAT! Accions per arribar al objectiu: ";
-            print actualAction;
+            #print actualAction;
             return actualAction;
 
         # Si nuevo nodo
@@ -296,13 +302,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             for nodePos,actions,cost in problem.getSuccessors(nodePos):
                 # Actualnode contiene el coste acumulado
                 # cost es el coste que vemos para ir a otro nodo
-
-		cumulativeCost = actualNode[1] + cost + heuristic(nodePos,problem);
-		# 	   (        [nodo]         ,  coste      , coste acumula + heuristik) 
+                cumulativeCost = actualNode[1] + cost + heuristic(nodePos,problem);
+                # 	   (        [nodo]         ,  coste      , coste acumula + heuristik)
                 struct.push([(nodePos,actions,cost), actualNode[1] + cost], cumulativeCost);
-		#	       (   set de acciones      ,  coste acumulado  )
+                #	       (   set de acciones      ,  coste acumulado  )
                 setCaminos.push(actualAction + [actions], cumulativeCost    );
-        #print "\n"
+                #print "\n"
     util.raiseNotDefined()
 
 # Abbreviations
