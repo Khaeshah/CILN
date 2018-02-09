@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -45,6 +45,34 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        # Set of all states
+        #S = mdp.getStates();
+
+        #BORRAR
+        state = self.mdp.getStates()[2]
+        #print mdp.getPossibleActions(state)
+        nextState = mdp.getTransitionStatesAndProbs(state, mdp.getPossibleActions(state)[0])
+        #print nextState
+        #print "printed next state"
+        #print mdp.getReward(state, mdp.getPossibleActions(state)[0] ,nextState)
+
+        states = self.mdp.getStates()
+
+        #print self.mdp.getStartState()
+
+        for i in range(iterations):
+            valuesCopy = self.values.copy()
+            for state in states:
+                finalValue = None
+                for action in self.mdp.getPossibleActions(state):
+                    currentValue = self.computeQValueFromValues(state,action)
+                    if finalValue == None or finalValue < currentValue:
+                        finalValue = currentValue
+                    if finalValue == None:
+                        finalValue = 0
+                    valuesCopy[state] = finalValue
+            self.values = valuesCopy
+        #FIN BORRAR
 
 
     def getValue(self, state):
@@ -60,6 +88,23 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
+        value = 0
+        transitionFunction = self.mdp.getTransitionStatesAndProbs(state,action)
+        for nextState, probability in transitionFunction:
+            value += probability * (self.mdp.getReward(state, action, nextState) + (self.discount * self.values[nextState]))
+        return value
+
+        """resultat = 0;
+        # Agafem una transicio a partir del state i action
+        transitions = mdp.getTransitionStatesAndProbs(state,action);
+        print "Transitions vale: " + str(transitions);
+        for transition in transitions:
+            print "Transition a secas vale " + str(transition);
+            print "Transition de 1 vale " + str(transition[1]);
+            # Agafem els estats i les probabilitats de cada estat/accion i fem la transition function
+
+            #resultat = resultat + transition[]
+        """
         util.raiseNotDefined()
 
     def computeActionFromValues(self, state):
@@ -72,7 +117,22 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        print "Computed actions"
+
+        possibleActions = self.mdp.getPossibleActions(state)
+
+        if len(possibleActions) == 0:
+            return None
+
+        value = None
+        result = None
+        for action in possibleActions:
+            temp = self.computeQValueFromValues(state, action)
+            if value == None or temp > value:
+                value = temp
+                result = action
+
+        return result
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
