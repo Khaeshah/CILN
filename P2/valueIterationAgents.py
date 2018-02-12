@@ -48,18 +48,26 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Set of all states
         #S = mdp.getStates();
 
+        for i in range(self.iterations):
+            for state in self.mdp.getStates():
+                possibleActions = self.mdp.getPossibleActions(state)
+                valuesForActions = util.Counter()
+                for action in possibleActions:
+                    currentValue = self.computeQValueFromValues(state,action);
+                    valuesForActions = currentValue;
+
+
+                    valuesForActions[action] = valueState
+                self.values[state] = valuesForActions[valuesForActions.argMax()]
+
+
+
+
+        """
         #BORRAR
         state = self.mdp.getStates()[2]
-        #print mdp.getPossibleActions(state)
         nextState = mdp.getTransitionStatesAndProbs(state, mdp.getPossibleActions(state)[0])
-        #print nextState
-        #print "printed next state"
-        #print mdp.getReward(state, mdp.getPossibleActions(state)[0] ,nextState)
-
         states = self.mdp.getStates()
-
-        #print self.mdp.getStartState()
-
         for i in range(iterations):
             valuesCopy = self.values.copy()
             for state in states:
@@ -73,7 +81,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                     valuesCopy[state] = finalValue
             self.values = valuesCopy
         #FIN BORRAR
-
+        """
 
     def getValue(self, state):
         """
@@ -88,23 +96,14 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        value = 0
-        transitionFunction = self.mdp.getTransitionStatesAndProbs(state,action)
-        for nextState, probability in transitionFunction:
-            value += probability * (self.mdp.getReward(state, action, nextState) + (self.discount * self.values[nextState]))
-        return value
-
-        """resultat = 0;
-        # Agafem una transicio a partir del state i action
-        transitions = mdp.getTransitionStatesAndProbs(state,action);
-        print "Transitions vale: " + str(transitions);
-        for transition in transitions:
-            print "Transition a secas vale " + str(transition);
-            print "Transition de 1 vale " + str(transition[1]);
-            # Agafem els estats i les probabilitats de cada estat/accion i fem la transition function
-
-            #resultat = resultat + transition[]
-        """
+        #  Agafem el q-value del (state, action) pair a partir de la value function donada per self.values.
+        #  returns the Q-value of the (state, action) pair given by the value function given by self.values.
+        qValue = 0;
+        transicions = self.mdp.getTransitionStatesAndProbs(state,action);
+        # A la posicio 0 tenim el seguent estado, i a la posicio 1 la probabilitat
+        for transicio in transicions:
+		    qValue += transicio[1] * (self.mdp.getReward(state, action, transicio[0]) + (self.discount*self.values[transicio[0]]))
+        return qValue
         util.raiseNotDefined()
 
     def computeActionFromValues(self, state):
@@ -117,13 +116,29 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        print "Computed actions"
+
+        # Aqui computem la millor accio a partir de la value function donada per self.values.
+        # Aqui son las flechas del gridworld
+        accions = self.mdp.getPossibleActions(state);
+
+        # Si tenim 0 accions possibles
+        if len(accions) == 0:
+            return None
+        value = None
+        result = None
 
         possibleActions = self.mdp.getPossibleActions(state)
 
-        if len(possibleActions) == 0:
-            return None
+        valuesForActions = util.Counter()
+        for action in possibleActions:
+        	transitionStatesAndProbs = self.mdp.getTransitionStatesAndProbs(state, action)
+        	valueState = 0
+        	for transition in transitionStatesAndProbs:
+        		valueState += transition[1] * (self.mdp.getReward(state, action, transition[0]) + self.discount * self.values[transition[0]])
+        	valuesForActions[action] = valueState
 
+
+        """
         value = None
         result = None
         for action in possibleActions:
@@ -133,6 +148,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                 result = action
 
         return result
+        """
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
