@@ -48,25 +48,41 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Set of all states
         #S = mdp.getStates();
 
-        for i in range(self.iterations):
+        state = self.mdp.getStates()[2];
+        states = self.mdp.getStates();
+        for i in range(iterations):
+            valuesForActions = self.values.copy();
             for state in self.mdp.getStates():
+                finalValue = 0;
+
                 possibleActions = self.mdp.getPossibleActions(state)
-                valuesForActions = util.Counter()
+                #valuesForActions = util.Counter();
                 for action in possibleActions:
                     currentValue = self.computeQValueFromValues(state,action);
-                    valuesForActions = currentValue;
+                    if finalValue == None or finalValue < currentValue:
+                        finalValue = currentValue
+                    if finalValue == None:
+                        finalValue = 0
+                    valuesForActions[state] = finalValue;
+            self.values = valuesForActions;
 
 
-                    valuesForActions[action] = valueState
-                self.values[state] = valuesForActions[valuesForActions.argMax()]
 
+         #Calculamos la utilidad de cada posible estado y usamos estas para seleccionar la accion
+        #MDP (MARKOV DECIVISION PROBLEM)
+        """
+        for i in range(iterations): #Calculamos para el numero de iteraciones maximas que tendremos
+          valores = self.values.copy() #Sobrescribimos
+          for state in self.mdp.getStates(): #Obtenemos los estados de nuestro problema MDP
+            action = self.computeActionFromValues(state) #Obtenemos la accion
+            actual = self.computeQValueFromValues(state,action) #Obtenemos su valor
+            valores[state] = actual #Actualizamos el resultado final
 
-
-
+          self.values = valores
+        # https://github.com/shiro873/pacman-projects/blob/master/p3_reinforcement_learning/valueIterationAgents.py
         """
         #BORRAR
         state = self.mdp.getStates()[2]
-        nextState = mdp.getTransitionStatesAndProbs(state, mdp.getPossibleActions(state)[0])
         states = self.mdp.getStates()
         for i in range(iterations):
             valuesCopy = self.values.copy()
@@ -105,6 +121,15 @@ class ValueIterationAgent(ValueEstimationAgent):
 		    qValue += transicio[1] * (self.mdp.getReward(state, action, transicio[0]) + (self.discount*self.values[transicio[0]]))
         return qValue
         util.raiseNotDefined()
+
+
+
+
+
+
+
+
+
 
     def computeActionFromValues(self, state):
         """
