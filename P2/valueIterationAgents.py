@@ -56,11 +56,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                 valores[state] = valor;
             self.values = valores;
 
-         #Calculamos la utilidad de cada posible estado y usamos estas para seleccionar la accion
-        #MDP (MARKOV DECIVISION PROBLEM)
-        """
-        # https://github.com/shiro873/pacman-projects/blob/master/p3_reinforcement_learning/valueIterationAgents.py
-        """
+
 
     def getValue(self, state):
         """
@@ -103,13 +99,16 @@ class ValueIterationAgent(ValueEstimationAgent):
         actions = self.mdp.getPossibleActions(state);
         # Valor menys "infinit"
         maxValue = -9999999;
-        resultat = None;
+        bestAction = None;
         for action in actions:
             valor = self.computeQValueFromValues(state,action);
+            # Agafem accio amb major value
             if valor > maxValue:
                 maxValue = valor;
-                resultat = action;
-        return resultat;
+                bestAction = action;
+
+        return bestAction;
+
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
