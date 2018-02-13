@@ -45,59 +45,55 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        # Set of all states
-        #S = mdp.getStates();
+        def getMax( a, b ):
+            """
+                Return the max of two values
+            """
+            if a > b:
+                return a;
+            return b;
 
-        state = self.mdp.getStates()[2];
+        # Bucle troncal
         states = self.mdp.getStates();
         for i in range(iterations):
-            valuesForActions = self.values.copy();
-            for state in self.mdp.getStates():
-                finalValue = 0;
 
-                possibleActions = self.mdp.getPossibleActions(state)
-                #valuesForActions = util.Counter();
-                for action in possibleActions:
-                    currentValue = self.computeQValueFromValues(state,action);
-                    if finalValue == None or finalValue < currentValue:
-                        finalValue = currentValue
-                    if finalValue == None:
-                        finalValue = 0
-                    valuesForActions[state] = finalValue;
-            self.values = valuesForActions;
+            valores = self.values.copy();
+            for state in states:
+                actions = self.mdp.getPossibleActions(state);
+                # Valor menys "infinit"
+                maxValue = -9999999;
+                for action in actions:
+                    qValue = self.computeQValueFromValues(state,action);
+                    maxValue = self.getMax(qValue,maxValue);
 
+                    valores[state] = maxValue;
+            self.values = valores;
 
 
          #Calculamos la utilidad de cada posible estado y usamos estas para seleccionar la accion
         #MDP (MARKOV DECIVISION PROBLEM)
         """
         for i in range(iterations): #Calculamos para el numero de iteraciones maximas que tendremos
-          valores = self.values.copy() #Sobrescribimos
-          for state in self.mdp.getStates(): #Obtenemos los estados de nuestro problema MDP
-            action = self.computeActionFromValues(state) #Obtenemos la accion
-            actual = self.computeQValueFromValues(state,action) #Obtenemos su valor
-            valores[state] = actual #Actualizamos el resultado final
+            valores = self.values.copy() #Sobrescribimos
+            for state in self.mdp.getStates(): #Obtenemos los estados de nuestro problema MDP
+                action = self.computeActionFromValues(state) #Obtenemos la accion
+                actual = self.computeQValueFromValues(state,action) #Obtenemos su valor
+                valores[state] = actual #Actualizamos el resultado final
 
-          self.values = valores
+            self.values = valores
+
         # https://github.com/shiro873/pacman-projects/blob/master/p3_reinforcement_learning/valueIterationAgents.py
         """
-        #BORRAR
-        state = self.mdp.getStates()[2]
-        states = self.mdp.getStates()
-        for i in range(iterations):
-            valuesCopy = self.values.copy()
-            for state in states:
-                finalValue = None
-                for action in self.mdp.getPossibleActions(state):
-                    currentValue = self.computeQValueFromValues(state,action)
-                    if finalValue == None or finalValue < currentValue:
-                        finalValue = currentValue
-                    if finalValue == None:
-                        finalValue = 0
-                    valuesCopy[state] = finalValue
-            self.values = valuesCopy
-        #FIN BORRAR
+
+
+    def getMax( self, a, b ):
         """
+            Return the max of two values. Funcio de la casa.
+        """
+        if a > b:
+            return a;
+        return b;
+
 
     def getValue(self, state):
         """
@@ -118,17 +114,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         transicions = self.mdp.getTransitionStatesAndProbs(state,action);
         # A la posicio 0 tenim el seguent estado, i a la posicio 1 la probabilitat
         for transicio in transicions:
-		    qValue += transicio[1] * (self.mdp.getReward(state, action, transicio[0]) + (self.discount*self.values[transicio[0]]))
+            qValue += transicio[1] * (self.mdp.getReward(state, action, transicio[0]) + (self.discount*self.values[transicio[0]]))
         return qValue
         util.raiseNotDefined()
-
-
-
-
-
-
-
-
 
 
     def computeActionFromValues(self, state):
@@ -144,6 +132,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Aqui computem la millor accio a partir de la value function donada per self.values.
         # Aqui son las flechas del gridworld
+        """
         accions = self.mdp.getPossibleActions(state);
 
         # Si tenim 0 accions possibles
@@ -162,7 +151,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         		valueState += transition[1] * (self.mdp.getReward(state, action, transition[0]) + self.discount * self.values[transition[0]])
         	valuesForActions[action] = valueState
 
-
+        """
         """
         value = None
         result = None
@@ -174,6 +163,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         return result
         """
+        return 0;
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
