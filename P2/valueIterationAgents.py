@@ -45,55 +45,22 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        def getMax( a, b ):
-            """
-                Return the max of two values
-            """
-            if a > b:
-                return a;
-            return b;
-
         # Bucle troncal
+
         states = self.mdp.getStates();
         for i in range(iterations):
-
             valores = self.values.copy();
             for state in states:
-                actions = self.mdp.getPossibleActions(state);
-                # Valor menys "infinit"
-                maxValue = -9999999;
-                for action in actions:
-                    qValue = self.computeQValueFromValues(state,action);
-                    maxValue = self.getMax(qValue,maxValue);
-
-                    valores[state] = maxValue;
+                action = self.computeActionFromValues(state);
+                valor = self.computeQValueFromValues(state,action);
+                valores[state] = valor;
             self.values = valores;
-
 
          #Calculamos la utilidad de cada posible estado y usamos estas para seleccionar la accion
         #MDP (MARKOV DECIVISION PROBLEM)
         """
-        for i in range(iterations): #Calculamos para el numero de iteraciones maximas que tendremos
-            valores = self.values.copy() #Sobrescribimos
-            for state in self.mdp.getStates(): #Obtenemos los estados de nuestro problema MDP
-                action = self.computeActionFromValues(state) #Obtenemos la accion
-                actual = self.computeQValueFromValues(state,action) #Obtenemos su valor
-                valores[state] = actual #Actualizamos el resultado final
-
-            self.values = valores
-
         # https://github.com/shiro873/pacman-projects/blob/master/p3_reinforcement_learning/valueIterationAgents.py
         """
-
-
-    def getMax( self, a, b ):
-        """
-            Return the max of two values. Funcio de la casa.
-        """
-        if a > b:
-            return a;
-        return b;
-
 
     def getValue(self, state):
         """
@@ -108,6 +75,8 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
+        if action is None: #En caso de ninguna accion, devolvemos un valor por defecto, en este caso cero
+            return 0.0
         #  Agafem el q-value del (state, action) pair a partir de la value function donada per self.values.
         #  returns the Q-value of the (state, action) pair given by the value function given by self.values.
         qValue = 0;
@@ -129,41 +98,18 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-
         # Aqui computem la millor accio a partir de la value function donada per self.values.
         # Aqui son las flechas del gridworld
-        """
-        accions = self.mdp.getPossibleActions(state);
-
-        # Si tenim 0 accions possibles
-        if len(accions) == 0:
-            return None
-        value = None
-        result = None
-
-        possibleActions = self.mdp.getPossibleActions(state)
-
-        valuesForActions = util.Counter()
-        for action in possibleActions:
-        	transitionStatesAndProbs = self.mdp.getTransitionStatesAndProbs(state, action)
-        	valueState = 0
-        	for transition in transitionStatesAndProbs:
-        		valueState += transition[1] * (self.mdp.getReward(state, action, transition[0]) + self.discount * self.values[transition[0]])
-        	valuesForActions[action] = valueState
-
-        """
-        """
-        value = None
-        result = None
-        for action in possibleActions:
-            temp = self.computeQValueFromValues(state, action)
-            if value == None or temp > value:
-                value = temp
-                result = action
-
-        return result
-        """
-        return 0;
+        actions = self.mdp.getPossibleActions(state);
+        # Valor menys "infinit"
+        maxValue = -9999999;
+        resultat = None;
+        for action in actions:
+            valor = self.computeQValueFromValues(state,action);
+            if valor > maxValue:
+                maxValue = valor;
+                resultat = action;
+        return resultat;
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
