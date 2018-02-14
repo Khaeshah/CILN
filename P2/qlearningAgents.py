@@ -42,9 +42,8 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
         "*** YOUR CODE HERE ***"
-
+        # Inicialitzem els qValues, a 0 inicialment
     	self.qValues = util.Counter()
-
 
     def getQValue(self, state, action):
         """
@@ -53,6 +52,7 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
+        # Retornem el q value d'un estat | accio actual
         return self.qValues[ (state,action) ];
 
     def computeValueFromQValues(self, state):
@@ -63,14 +63,16 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        # Al ser un util.Counter, s inicia a 0
-        possibleStateQValues = util.Counter()
-
+        # Al ser un util.Counter, s inicia a 0.
+        # Tindrem quatre valors dins el estat futur.
+        possibleStates = util.Counter()
         actions = self.getLegalActions(state);
-
     	for action in actions:
-            possibleStateQValues[action] = self.getQValue(state, action)
-        return possibleStateQValues[possibleStateQValues.argMax()]
+            possibleStates[action] = self.getQValue(state, action)
+        # Agafem el maxim valor de les posibles accions
+        maxValue = possibleStates[possibleStates.argMax()]
+
+        return maxValue;
 
     def computeActionFromQValues(self, state):
         """
@@ -79,20 +81,18 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-    	possibleStateQValues = util.Counter()
+        # Retornem la millor accio d'un estat, es a dir, el major qvalue.
+    	possibleStates = util.Counter()
         possibleActions = self.getLegalActions(state)
-        
+
     	if len(possibleActions) == 0:
     	    return None
+
     	for action in possibleActions:
-    	    possibleStateQValues[action] = self.getQValue(state, action)
-
-    	if possibleStateQValues.totalCount() == 0:
-    	    return random.choice(possibleActions)
-    	else:
-    	    return possibleStateQValues.argMax()
-
-        util.raiseNotDefined()
+    	    possibleStates[action] = self.getQValue(state, action)
+        # Retornem la millor accio a fer depenent del qValue
+        bestAction = possibleStates.argMax();
+        return bestAction
 
     def getAction(self, state):
         """
@@ -105,16 +105,18 @@ class QLearningAgent(ReinforcementAgent):
           HINT: You might want to use util.flipCoin(prob)
           HINT: To pick randomly from a list, use random.choice(list)
         """
-        # Pick Action
+        # Pick Action # 5 greedy
         legalActions = self.getLegalActions(state)
-        action = None
         "*** YOUR CODE HERE ***"
+        # Quan epsilon fem random
     	if len(legalActions) > 0:
     	    if util.flipCoin(self.epsilon):
-    	        action = random.choice(legalActions)
+                # Accio random
+    	        return random.choice(legalActions)
     	    else:
-                    action = self.getPolicy(state)
-    	return action
+                # La bona accio
+                return self.getPolicy(state)
+    	return None;
 
     def update(self, state, action, nextState, reward):
         """
@@ -127,7 +129,7 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         # El Formula de wikipedia :)
-        #      QValues[state, action] =  QValue[state, action] + ALPHA * (Reward + discount * QValue[nextState] -  QValue[state, action])
+        # QValues[state, action] =  (1 - ALPHA) * QValue[state, action] + ALPHA * (Reward + discount * QValue[nextState])
         self.qValues[(state, action)] = (1 - self.alpha ) *  self.getQValue(state, action) + self.alpha * (reward + self.discount * self.getValue(nextState));
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
@@ -190,7 +192,7 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-	
+
 
     def update(self, state, action, nextState, reward):
         """
