@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -67,14 +67,41 @@ class ReflexAgent(Agent):
         to create a masterful evaluation function.
         """
         # Useful information you can extract from a GameState (pacman.py)
+
+        # Aqui tenim el mapa
         successorGameState = currentGameState.generatePacmanSuccessor(action)
+        # Nova posicio
         newPos = successorGameState.getPacmanPosition()
+        # Mapa de las foods
         newFood = successorGameState.getFood()
+        # Estats dels fantasmes
         newGhostStates = successorGameState.getGhostStates()
+        # Temps restant amb powerup
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
+
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # Agafem la posicio del fantasma enemic i calculem la distancia a ell
+        posicioFantasma = currentGameState.getGhostPosition(1);
+        distanciaEnemic = util.manhattanDistance(posicioFantasma, newPos);
+
+        distanciaMenjar = [manhattanDistance(newPos,foodPos) for foodPos in newFood.asList()]
+
+        puntuacioFinal = successorGameState.getScore()
+        puntuacioFantasma = 0;
+        puntuacioMenjar = 0;
+
+        # Evitem el fantasma
+        if distanciaEnemic > 2:
+            if len(distanciaMenjar):
+                puntuacioMenjar = 5 / min(distanciaMenjar);
+            else:
+                puntuacioMenjar = 100;
+        else:
+            puntuacioFantasma = -2000;
+
+        puntuacioFinal += puntuacioMenjar + puntuacioFantasma;
+        return puntuacioFinal;
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -111,6 +138,12 @@ class MinimaxAgent(MultiAgentSearchAgent):
       Your minimax agent (question 2)
     """
 
+    """
+        PELO
+        https://github.com/georgemouse/multiagent/blob/master/multiAgents.py
+        https://github.com/filR/edX-CS188.1x-Artificial-Intelligence/blob/master/Project%202%20-%20Multi-Agent%20Pacman/multiAgents.py
+        https://github.com/douglaschan32167/multiagent/blob/master/multiAgents.py
+    """
     def getAction(self, gameState):
         """
           Returns the minimax action from the current gameState using self.depth
@@ -170,4 +203,3 @@ def betterEvaluationFunction(currentGameState):
 
 # Abbreviation
 better = betterEvaluationFunction
-
