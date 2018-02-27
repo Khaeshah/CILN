@@ -162,7 +162,60 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
+        return self.MinimaxSearch(gameState, 1, 0 )
+
+    def MinimaxSearch(self, gameState, currentDepth, agentIndex):
+        "Cas base"
+        # Si intentem explorar mes del que ens han especificat o s'ha acabat la partida, parem
+        if currentDepth > self.depth or gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+
+        "MiniMax"
+        # Agafem totes les accions que podem fer
+        accions = gameState.getLegalActions(agentIndex);
+        numeroAgents = gameState.getNumAgents();
+        # Actualitzem la profunditat
+        nextProfunditat = currentDepth
+        # Actualitzem el seguent agent
+        nextIndex = agentIndex + 1
+        # Si hem mirat tots els agents, augmentem el nivell de profunditat
+        if nextIndex >= numeroAgents:
+            nextIndex = 0
+            nextProfunditat = nextProfunditat + 1
+
+
+        # Agafem una millor accio o agafem un minimax result
+        resultats = [];
+        for accio in accions:
+            nextGameState = gameState.generateSuccessor(agentIndex, accio);
+            result = self.MinimaxSearch(nextGameState, nextProfunditat, nextIndex);
+            resultats.append(result);
+
+        # Primer moviment del pacman
+        if currentDepth == 1 and agentIndex == 0: # pacman first move
+            millorMoviment = max(resultats)
+
+            indexes = range(len(resultats));
+            bestIndices = [];
+            for index in indexes:
+                if resultats[index] == millorMoviment:
+                    bestIndices.append(index);
+            # Com podem tenir mes de un bon index, agafem el primer com a opcio
+            chosenIndex = bestIndices[0];
+            #chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+            return accions[chosenIndex]
+
+        # Si soc un max, agafo el max dels resultats
+        if agentIndex == 0:
+            millorMoviment = max(resultats)
+            return millorMoviment
+        # Si soc un min, agafo el min dels resultats
+        else:
+            millorMoviment = min(resultats)
+            return millorMoviment
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
