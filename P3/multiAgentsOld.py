@@ -14,7 +14,7 @@
 
 from util import manhattanDistance
 from game import Directions
-import random, util, sys
+import random, util
 
 from game import Agent
 
@@ -238,7 +238,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
-        def dispatch(state, depth, agent, A=float("-inf"), B=float("inf")):
+        def dispatch(state, depth, agent, A=-9999999.0, B=9999999.0):
             if agent == state.getNumAgents():  # next depth
                 depth += 1
                 agent = 0
@@ -247,9 +247,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 return self.evaluationFunction(state), None
 
             if self.isPacman(state, agent):
-                return getValue(state, depth, agent, A, B, float('-inf'), max)
+                return getValue(state, depth, agent, A, B, -9999999.0, max)
             else:
-                return getValue(state, depth, agent, A, B, float('inf'), min)
+                return getValue(state, depth, agent, A, B, 9999999.0, min)
 
         def getValue(state, depth, agent, A, B, ms, mf):
             bestScore = ms
@@ -273,7 +273,6 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         _,action = dispatch(gameState, 0, 0)
         return action
-
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
