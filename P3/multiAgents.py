@@ -238,70 +238,67 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         def maxAgent(gameState, depth, alpha, beta):
 
-          """ If game is finished """
-          if gameState.isWin() or gameState.isLose():
-            return self.evaluationFunction(gameState)
+            """ If game is finished """
+            if depth > self.depth or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
 
-          # Initialize best action and score
-          # v = -INF in max
-          bestAccio = None
-          maxAccio = -9999999
+            # Initialize best action and score
+            # v = -INF in max
+            bestAccio = None
+            maxValor = -9999999
 
-          accions = gameState.getLegalActions(0) # 0 is the index for pacman
+            accions = gameState.getLegalActions(self.index) # 0 is the index for pacman
 
-          """ For each action we have to obtain max score of min movements """
-          for action in accions:
-            successorGameState = gameState.generateSuccessor(0, action)
-            v = minAgent(successorGameState, depth, 1, alpha, beta)
-            # Update best max score
-            if(v > maxAccio):
-              maxAccio = v
-              bestAccio = action
+            """ For each action we have to obtain max score of min movements """
+            for action in accions:
+                successorGameState = gameState.generateSuccessor(self.index, action)
+                valor = minAgent(successorGameState, depth, 1, alpha, beta)
+                # Update best max score
+                if(valor > maxValor):
+                    maxValor = valor
+                    bestAccio = action
 
-            if(maxAccio > beta):
-              return maxAccio
-            alpha = max(alpha, maxAccio)
+                if(maxValor > beta):
+                    valorFinal = maxValor;
+                    return valorFinal;
+                alpha = max(alpha, maxValor)
 
-          # Recursive calls have finished -> depth = initial depth -> return best action
-          if depth == 0:
-            return bestAccio
-          # We are in different depth, we need to return a score
-          else:
-            return maxAccio
+            # Recursive calls have finished -> depth = initial depth -> return best action
+            if depth == 0:
+                return bestAccio
+            # We are in different depth, we need to return a score
+            else:
+                return maxValor
 
         def minAgent(gameState, depth, ghost, alpha, beta):
 
-          if gameState.isWin() or gameState.isLose():
-            return self.evaluationFunction(gameState)
+            if depth > self.depth or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
 
-          # Initialize score
-          # v = INF in min
-          maxAccio = 9999999
-          # Legal actions for selected ghost
-          accions = gameState.getLegalActions(ghost)
+            maxValor = 9999999
+            # Legal actions for selected ghost
+            accions = gameState.getLegalActions(ghost)
 
-          for action in accions:
-            successorGameState = gameState.generateSuccessor(ghost, action)
-            if(ghost < numFantasmes):
-              # There are still ghosts to move
-              # Using ghost + 1 to select the next ghost
-              v = minAgent(successorGameState, depth, ghost + 1, alpha, beta) # returns a score
-            else:
-              # Last ghost -> next turn is for pacman
-              if(depth == self.depth - 1): # IF IT IS A TERMINAL
-                v = self.evaluationFunction(successorGameState)
-              else:
-                # If it is not a terminal
-                v = maxAgent(successorGameState, depth + 1, alpha, beta) # returns a score
+            for action in accions:
+                successorGameState = gameState.generateSuccessor(ghost, action)
+                if(ghost < numFantasmes):
+                    # There are still ghosts to move
+                    # Using ghost + 1 to select the next ghost
+                    valor = minAgent(successorGameState, depth, ghost + 1, alpha, beta) # returns a score
+                else:
+                    # Last ghost -> next turn is for pacman
+                    if(depth == self.depth - 1): # IF IT IS A TERMINAL
+                        valor = self.evaluationFunction(successorGameState)
+                    else:
+                        # If it is not a terminal
+                        valor = maxAgent(successorGameState, depth + 1, alpha, beta) # returns a score
+                # Update best min score
+                maxValor = min(valor, maxValor)
 
-            # Update best min score
-            maxAccio = min(v, maxAccio)
-
-            if(maxAccio < alpha):
-              return maxAccio
-            beta = min(beta, maxAccio)
-
-          return maxAccio
+                if(maxValor < alpha):
+                    return maxValor
+                beta = min(beta, maxValor)
+            return maxValor
 
 
         # RETURN AN ACTION
