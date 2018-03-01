@@ -140,12 +140,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
       Your minimax agent (question 2)
     """
 
-    """
-        PELO
-        https://github.com/georgemouse/multiagent/blob/master/multiAgents.py
-        https://github.com/filR/edX-CS188.1x-Artificial-Intelligence/blob/master/Project%202%20-%20Multi-Agent%20Pacman/multiAgents.py
-        https://github.com/douglaschan32167/multiagent/blob/master/multiAgents.py
-    """
     def getAction(self, gameState):
         """
           Returns the minimax action from the current gameState using self.depth
@@ -199,6 +193,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             millorMoviment = max(resultats)
 
             indexes = range(len(resultats));
+            # Array amb els millors index que podem agafar
             bestIndices = [];
             for index in indexes:
                 if resultats[index] == millorMoviment:
@@ -232,76 +227,78 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
 
         """ Number of ghosts in game """
-        numFantasmes = gameState.getNumAgents() - 1
-        alpha = -9999999
-        beta = 9999999
+        numFantasmes = gameState.getNumAgents() - 1;
+        # Alfa menys infinit, beta mes infinit inicialment
+        alpha = -9999999;
+        beta = 9999999;
 
         def maxAgent(gameState, depth, alpha, beta):
 
-            """ If game is finished """
+            # Condicions de finalitzacio
             if depth > self.depth or gameState.isWin() or gameState.isLose():
-                return self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState);
 
-            # Initialize best action and score
-            # v = -INF in max
-            bestAccio = None
-            maxValor = -9999999
+            # Inicialment la millor accio es cap, i el valor maxim es menys infinit
+            bestAccio = None;
+            maxValor = -9999999;
 
-            accions = gameState.getLegalActions(self.index) # 0 is the index for pacman
+            # Obtenim totes les accions que podem fer com a pacman
+            accions = gameState.getLegalActions(self.index);
 
             """ For each action we have to obtain max score of min movements """
-            for action in accions:
-                successorGameState = gameState.generateSuccessor(self.index, action)
+            # Per cada accio possible, agafem la maxima puntuacio dels moviments del min
+            for accio in accions:
+                # Nou estat de partida
+                successorGameState = gameState.generateSuccessor(self.index, accio)
+                # Inicialment ho pasem per el fantasma 1.
                 valor = minAgent(successorGameState, depth, 1, alpha, beta)
                 # Update best max score
                 if(valor > maxValor):
                     maxValor = valor
-                    bestAccio = action
+                    bestAccio = accio
 
                 if(maxValor > beta):
                     valorFinal = maxValor;
                     return valorFinal;
                 alpha = max(alpha, maxValor)
 
-            # Recursive calls have finished -> depth = initial depth -> return best action
+            # Si la profunditat es igual a la inicial hem acabat, retornem la accio
             if depth == 0:
                 return bestAccio
-            # We are in different depth, we need to return a score
             else:
                 return maxValor
 
         def minAgent(gameState, depth, ghost, alpha, beta):
 
+            # Condicions de finalitzacio
             if depth > self.depth or gameState.isWin() or gameState.isLose():
-                return self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState);
 
-            maxValor = 9999999
-            # Legal actions for selected ghost
-            accions = gameState.getLegalActions(ghost)
+            maxValor = 9999999;
+            # Obtenim les accions que pot fer el fantasma ghost
+            accions = gameState.getLegalActions(ghost);
 
-            for action in accions:
-                successorGameState = gameState.generateSuccessor(ghost, action)
+            # Per totes les accions
+            for accio in accions:
+                # Obtenim el nou estat del joc per cada accio d'un ghost
+                successorGameState = gameState.generateSuccessor(ghost, accio)
+                # Si hi ha mes d'un fantasma, tambe cridem a la funcio per els altres.
                 if(ghost < numFantasmes):
-                    # There are still ghosts to move
-                    # Using ghost + 1 to select the next ghost
-                    valor = minAgent(successorGameState, depth, ghost + 1, alpha, beta) # returns a score
+                    valor = minAgent(successorGameState, depth, ghost + 1, alpha, beta)
                 else:
-                    # Last ghost -> next turn is for pacman
-                    if(depth == self.depth - 1): # IF IT IS A TERMINAL
+                    # Si tenim un node terminal
+                    if(depth == self.depth-1):
                         valor = self.evaluationFunction(successorGameState)
                     else:
-                        # If it is not a terminal
-                        valor = maxAgent(successorGameState, depth + 1, alpha, beta) # returns a score
-                # Update best min score
+                        # Sino continuem explorant
+                        valor = maxAgent(successorGameState, depth + 1, alpha, beta)
+                # Actualitzem el valor min
                 maxValor = min(valor, maxValor)
-
                 if(maxValor < alpha):
                     return maxValor
                 beta = min(beta, maxValor)
             return maxValor
 
-
-        # RETURN AN ACTION
         return maxAgent(gameState, 0, alpha, beta) # depth = 0
 
         util.raiseNotDefined()
