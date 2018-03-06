@@ -35,7 +35,6 @@ def crearLexic(diccionari):
 
     file = open("lexic.txt","w");
 
-
     for paraula in diccionari:
         for tipus in diccionari[paraula]:
             #print paraula, "\t" ,tipus, "\t", diccionari[paraula][tipus]
@@ -44,39 +43,39 @@ def crearLexic(diccionari):
 
 def readTest(filename_in, filename_out, diccionari):
 
-
     file_out = open(filename_out,"w")
-
 
     with open(filename_in) as file:
         for line in file:
+            # El tipus mes comu es NP
             etiqueta = "NP"
             # rstrip per ,\r\n
             paraula = line.decode("latin_1").encode("UTF-8").rstrip()
+            # Posem tipus mes frequent
             if paraula in diccionari:
                 maxocurrences = 0
                 for tipus in diccionari[paraula]:
                     if maxocurrences < diccionari[paraula][tipus]:
                         maxocurrences = diccionari[paraula][tipus]
                         etiqueta = tipus
-
+            # Write al file
             file_out.write(paraula + "\t" + etiqueta + "\r\n")
-
-    #llegim test1
 
     file.close()
     file_out.close()
 
 def evaluate(filename_generated, filename_gold):
-
+    # Obrim fitxers
     file_gold = open(filename_gold,"r")
-    file_generated = open(filename_generated,"r").read()
+    file_generated = open(filename_generated,"r").read() #read() perque iterarem
 
     correct = 0.0
     total = 0.0
 
+    # Per cada linia del fitxer golden
     for dirtyLine in file_gold:
         line = dirtyLine.decode("latin_1").encode("UTF-8")
+        # Si existeix al que hem generat --> +1
         if line in file_generated:
             correct +=1
         total += 1
@@ -93,13 +92,10 @@ def main():
     readTest("test_2.txt", "test_2_out.txt", diccionari);
     # comparar gold_standard_1 amb test_1
     avaluacio1 = evaluate("test_1_out.txt", "gold_standard_1.txt")
+    # comparar gold_standard_2 amb test_2
     avaluacio2 = evaluate("test_2_out.txt", "gold_standard_2.txt")
+
     print "test_1", avaluacio1;
     print "test_2", avaluacio2
-
-    # repetir amb test_2
-
-
-
 
 main();
