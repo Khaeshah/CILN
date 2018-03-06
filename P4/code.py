@@ -1,5 +1,7 @@
 corpus = "corpus.txt";
 
+EOF = "\r\t"
+
 def readCorpus(diccionari):
 
     with open(corpus) as file:
@@ -65,22 +67,18 @@ def readTest(filename_in, filename_out, diccionari):
     file_out.close()
 
 def evaluate(filename_generated, filename_gold):
-    correctes = 0.0;
-    total = 0.0;
 
-    file_gold = open(filename_gold, "r")
+    file_good = open(filename_gold,"r").read()
+    correct = 0.0
+    total = 0.0
+    file_mine = open(filename_generated,"r")
 
-    with open(filename_generated) as file_generated:
-        for line in file_generated:
-            (paraula, tipus) = line.split("\t")
-
-            
-
-            if paraula+"\t"+tipus in file_gold:
-                correctes += 1
-            total += 1
-    print "correctes", correctes, "total", total
-    return correctes/total;
+    for line in file_mine:
+        if line in file_good:
+            correct +=1
+        total += 1
+    print "correct",correct, "total",total
+    return correct/total;
 
 def main():
     diccionari = dict();
@@ -92,5 +90,8 @@ def main():
     print evaluate("test_1_out.txt", "gold_standard_1.txt")
 
     # repetir amb test_2
+
+
+
 
 main();
