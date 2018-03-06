@@ -1,7 +1,7 @@
 corpus = "corpus.txt";
 
 def readCorpus(diccionari):
-    file = open("corpus.txt", "r");
+
     with open(corpus) as file:
         for line in file:
             lineAux = line.decode("latin_1").encode("UTF-8")
@@ -23,32 +23,46 @@ def readCorpus(diccionari):
         # Creem l'arxiu de lexic
         crearLexic(diccionari)
 
-
+        file.close()
 
 def crearLexic(diccionari):
     # Ara guardar el output en un fichero lexic con el formato:
     # Cantar    V   440
     # Perro     N   330
     # Perro     Adj 30
+
+    file = open("lexic.txt","w");
+
+
     for paraula in diccionari:
-        print paraula, " " ,diccionari[paraula]
-        #for tipus in paraula:
-        #    print paraula, " ", tipus, " "#, diccionari[paraula][tipus]
+        for tipus in diccionari[paraula]:
+            #print paraula, "\t" ,tipus, "\t", diccionari[paraula][tipus]
+            file.write(paraula + "\t" + tipus + "\t" + str(diccionari[paraula][tipus]) + "\r\n" )
+    file.close()
+
+def readTest(filename_in, filename_out, diccionari):
 
 
-
-    """
-    (paraula, prep) = line.split()
+    file_out = open(filename_out,"w")
 
 
-    entrades = dict();
-    entrades[prep] = 1;
-    diccionari[paraula] = entrades;
+    with open(filename_in) as file:
+        for line in file:
+            etiqueta = "NP"
+            paraula = line.decode("latin_1").encode("UTF-8")
+            if paraula not in diccionari:
+                maxocurrences = 0
+                print "GINYU"
+                for tipus in diccionari[paraula]:
+                    if maxocurrences < diccionari[paraula][tipus]:
+                        maxocurrences = diccionari[paraula][tipus]
+                        etiqueta = tipus
+            file_out.write(paraula + "\t" + etiqueta + "\r\n")
 
+    #llegim test1
 
-    print diccionari;
-    """
-
+    file.close()
+    file_out.close()
 
 
 def main():
@@ -56,7 +70,7 @@ def main():
     # Llegir fitxer corpus.txt i guardarlo
     readCorpus(diccionari);
     # llegir fitxer test_1 i compararlo amb el diccionari
-
+    readTest("test_1.txt", "test1_out.txt", diccionari);
     # escriure en el fitxer test_1 el que es (nom, adv...)
 
     # comparar gold_standard_1 amb test_1
