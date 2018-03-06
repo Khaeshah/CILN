@@ -59,6 +59,7 @@ def readTest(filename_in, filename_out, diccionari):
                     if maxocurrences < diccionari[paraula][tipus]:
                         maxocurrences = diccionari[paraula][tipus]
                         etiqueta = tipus
+
             file_out.write(paraula + "\t" + etiqueta + "\r\n")
 
     #llegim test1
@@ -68,15 +69,20 @@ def readTest(filename_in, filename_out, diccionari):
 
 def evaluate(filename_generated, filename_gold):
 
-    file_good = open(filename_gold,"r").read()
+    file_gold = open(filename_gold,"r")
+    file_generated = open(filename_generated,"r").read()
+
     correct = 0.0
     total = 0.0
-    file_mine = open(filename_generated,"r")
 
-    for line in file_mine:
-        if line in file_good:
+    for dirtyLine in file_gold:
+        line = dirtyLine.decode("latin_1").encode("UTF-8")
+        if line in file_generated:
             correct +=1
+        else:
+            print line
         total += 1
+
     print "correct",correct, "total",total
     return correct/total;
 
