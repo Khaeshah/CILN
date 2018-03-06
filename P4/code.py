@@ -49,8 +49,8 @@ def readTest(filename_in, filename_out, diccionari):
     with open(filename_in) as file:
         for line in file:
             etiqueta = "NP"
-            paraulaAux = line.decode("latin_1").encode("UTF-8")
-            paraula = paraulaAux.rstrip()
+            # rstrip per ,\r\n
+            paraula = line.decode("latin_1").encode("UTF-8").rstrip()
             if paraula in diccionari:
                 maxocurrences = 0
                 for tipus in diccionari[paraula]:
@@ -64,16 +64,32 @@ def readTest(filename_in, filename_out, diccionari):
     file.close()
     file_out.close()
 
+def evaluate(filename_generated, filename_gold):
+    correctes = 0.0;
+    total = 0.0;
+
+    file_gold = open(filename_gold, "r")
+
+    with open(filename_generated) as file_generated:
+        for line in file_generated:
+            (paraula, tipus) = line.split("\t")
+
+            
+
+            if paraula+"\t"+tipus in file_gold:
+                correctes += 1
+            total += 1
+    print "correctes", correctes, "total", total
+    return correctes/total;
 
 def main():
     diccionari = dict();
     # Llegir fitxer corpus.txt i guardarlo
     readCorpus(diccionari);
-    # llegir fitxer test_1 i compararlo amb el diccionari
-    readTest("test_1.txt", "test1_out.txt", diccionari);
     # escriure en el fitxer test_1 el que es (nom, adv...)
-
+    readTest("test_1.txt", "test_1_out.txt", diccionari);
     # comparar gold_standard_1 amb test_1
+    print evaluate("test_1_out.txt", "gold_standard_1.txt")
 
     # repetir amb test_2
 
