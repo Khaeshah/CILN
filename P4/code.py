@@ -1,7 +1,22 @@
+"""
+    P4 CILN -Tagging basado en unigramas-
+
+    Autors:
+            Roman Rey Pedrero   : 183694
+            Sergi Sorigue Arnau : 184753
+"""
+
+
+
 corpus = "corpus.txt";
 
-EOF = "\r\t"
+EOF = "\r\n"
 
+"""
+    Funcio readCorpus: llegeix un corpus i el carrega a un diccionari, comptant
+    el nombre d'ocurrences de cada tipus de paraula.
+    Aquesta funcio crea l'arxiu lexic.txt
+"""
 def readCorpus(diccionari):
 
     with open(corpus) as file:
@@ -26,7 +41,9 @@ def readCorpus(diccionari):
         crearLexic(diccionari)
 
         file.close()
-
+"""
+    Funcio crearLexic: Guarda al fitxer lexic.txt el diccionari seguint el format
+"""
 def crearLexic(diccionari):
     # Ara guardar el output en un fichero lexic con el formato:
     # Cantar    V   440
@@ -38,9 +55,14 @@ def crearLexic(diccionari):
     for paraula in diccionari:
         for tipus in diccionari[paraula]:
             #print paraula, "\t" ,tipus, "\t", diccionari[paraula][tipus]
-            file.write(paraula + "\t" + tipus + "\t" + str(diccionari[paraula][tipus]) + "\r\n" )
+            file.write(paraula + "\t" + tipus + "\t" + str(diccionari[paraula][tipus]) + EOF )
     file.close()
 
+
+"""
+    Funcio readTest: donat un fitxer de paraules, generem un fitxer amb les mateixes
+    i el tipus de paraula mes frequent al diccionari.
+"""
 def readTest(filename_in, filename_out, diccionari):
 
     file_out = open(filename_out,"w")
@@ -59,11 +81,14 @@ def readTest(filename_in, filename_out, diccionari):
                         maxocurrences = diccionari[paraula][tipus]
                         etiqueta = tipus
             # Write al file
-            file_out.write(paraula + "\t" + etiqueta + "\r\n")
+            file_out.write(paraula + "\t" + etiqueta + EOF)
 
     file.close()
     file_out.close()
-
+"""
+    Funcio evaluate: compara el fitxer generat i el fitxer amb les paraules ja etiquetades
+    i calcula la precisio  prediccions_correctes / total_prediccions
+"""
 def evaluate(filename_generated, filename_gold):
     # Obrim fitxers
     file_gold = open(filename_gold,"r")
@@ -79,15 +104,19 @@ def evaluate(filename_generated, filename_gold):
         if line in file_generated:
             correct +=1
         total += 1
-
-    print "correct",correct, "total",total
+    print "corr", correct, "tot", total
     return correct/total;
 
+
+"""
+    MAIN del programa, s'executen les funcions anteriors sequencialent.
+    Creem el diccionari, realitzaem els tests, i els avaluem
+"""
 def main():
     diccionari = dict();
-    # Llegir fitxer corpus.txt i guardarlo
+    # Llegir fitxer corpus.txt i guardarlo a lexic.txt
     readCorpus(diccionari);
-    # escriure en el fitxer test_1 el que es (nom, adv...)
+    # generar els fitxer test_x_out
     readTest("test_1.txt", "test_1_out.txt", diccionari);
     readTest("test_2.txt", "test_2_out.txt", diccionari);
     # comparar gold_standard_1 amb test_1
@@ -97,5 +126,6 @@ def main():
 
     print "test_1", avaluacio1;
     print "test_2", avaluacio2
+
 
 main();
