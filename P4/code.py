@@ -49,10 +49,10 @@ def readTest(filename_in, filename_out, diccionari):
     with open(filename_in) as file:
         for line in file:
             etiqueta = "NP"
-            paraula = line.decode("latin_1").encode("UTF-8")
-            if paraula not in diccionari:
+            paraulaAux = line.decode("latin_1").encode("UTF-8")
+            paraula = paraulaAux.rstrip()
+            if paraula in diccionari:
                 maxocurrences = 0
-                print "GINYU"
                 for tipus in diccionari[paraula]:
                     if maxocurrences < diccionari[paraula][tipus]:
                         maxocurrences = diccionari[paraula][tipus]
