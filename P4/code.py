@@ -79,8 +79,6 @@ def evaluate(filename_generated, filename_gold):
         line = dirtyLine.decode("latin_1").encode("UTF-8")
         if line in file_generated:
             correct +=1
-        else:
-            print line
         total += 1
 
     print "correct",correct, "total",total
@@ -92,8 +90,12 @@ def main():
     readCorpus(diccionari);
     # escriure en el fitxer test_1 el que es (nom, adv...)
     readTest("test_1.txt", "test_1_out.txt", diccionari);
+    readTest("test_2.txt", "test_2_out.txt", diccionari);
     # comparar gold_standard_1 amb test_1
-    print evaluate("test_1_out.txt", "gold_standard_1.txt")
+    avaluacio1 = evaluate("test_1_out.txt", "gold_standard_1.txt")
+    avaluacio2 = evaluate("test_2_out.txt", "gold_standard_2.txt")
+    print "test_1", avaluacio1;
+    print "test_2", avaluacio2
 
     # repetir amb test_2
 
