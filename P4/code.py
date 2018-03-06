@@ -6,16 +6,13 @@
             Sergi Sorigue Arnau : 184753
 """
 
-
-
 corpus = "corpus.txt";
-
 EOF = "\r\n"
 
 """
     Funcio readCorpus: llegeix un corpus i el carrega a un diccionari, comptant
     el nombre d'ocurrences de cada tipus de paraula.
-    Aquesta funcio crea l'arxiu lexic.txt
+    Aquesta funcio tambe crea l'arxiu lexic.txt
 """
 def readCorpus(diccionari):
 
@@ -28,24 +25,22 @@ def readCorpus(diccionari):
                 entrades[tipus] = 1
                 diccionari[paraula] = entrades
             else:
-                # Quan no existeix la prep la creem
+                # Quan no existeix el tag el creem
                 if tipus not in diccionari[paraula]:
                     diccionari[paraula][tipus] = 1
-                    #diccionari[paraula] = entrades
                 # Quan ja existeix la prep, incrementem en 1 el nombre d'aparicions
                 else:
                     diccionari[paraula][tipus] += 1;
-                    #print paraula, ":", diccionari[paraula]
 
-        # Creem l'arxiu de lexic
+        # Creem l'arxiu de lexic | aparicions
         crearLexic(diccionari)
-
         file.close()
+
 """
     Funcio crearLexic: Guarda al fitxer lexic.txt el diccionari seguint el format
 """
 def crearLexic(diccionari):
-    # Ara guardar el output en un fichero lexic con el formato:
+    # Guardem el output en un fitxer lexic amb el formato:
     # Cantar    V   440
     # Perro     N   330
     # Perro     Adj 30
@@ -54,7 +49,6 @@ def crearLexic(diccionari):
 
     for paraula in diccionari:
         for tipus in diccionari[paraula]:
-            #print paraula, "\t" ,tipus, "\t", diccionari[paraula][tipus]
             file.write(paraula + "\t" + tipus + "\t" + str(diccionari[paraula][tipus]) + EOF )
     file.close()
 
@@ -69,48 +63,48 @@ def readTest(filename_in, filename_out, diccionari):
 
     with open(filename_in) as file:
         for line in file:
-            # El tipus mes comu es NP
+            # El tipus mes comu es NP, per tant l'assignarem en cas que no existeixi
             etiqueta = "NP"
-            # rstrip per ,\r\n
+            # Utilitzem rstrip per \r\n
             paraula = line.decode("latin_1").encode("UTF-8").rstrip()
-            # Posem tipus mes frequent
+            # Agafem el tipus mes frequent com a tag
             if paraula in diccionari:
                 maxocurrences = 0
                 for tipus in diccionari[paraula]:
                     if maxocurrences < diccionari[paraula][tipus]:
                         maxocurrences = diccionari[paraula][tipus]
                         etiqueta = tipus
-            # Write al file
+            # Ho escribim a la file.
             file_out.write(paraula + "\t" + etiqueta + EOF)
 
     file.close()
     file_out.close()
+
 """
     Funcio evaluate: compara el fitxer generat i el fitxer amb les paraules ja etiquetades
-    i calcula la precisio  prediccions_correctes / total_prediccions
+    i calcula la precisio: prediccions_correctes / total_prediccions
 """
 def evaluate(filename_generated, filename_gold):
-    # Obrim fitxers
     file_gold = open(filename_gold,"r")
-    file_generated = open(filename_generated,"r").read() #read() perque iterarem
+    file_generated = open(filename_generated,"r").read()
 
     correct = 0.0
     total = 0.0
 
-    # Per cada linia del fitxer golden
+    # Per cada linia del fitxer golden mirem
     for dirtyLine in file_gold:
         line = dirtyLine.decode("latin_1").encode("UTF-8")
-        # Si existeix al que hem generat --> +1
+        # Si existeix al que hem generat --> +1 a correcte
         if line in file_generated:
             correct +=1
         total += 1
-    print "corr", correct, "tot", total
+    print "Correctes:", correct, "Totals:", total
     return correct/total;
 
 
 """
     MAIN del programa, s'executen les funcions anteriors sequencialent.
-    Creem el diccionari, realitzaem els tests, i els avaluem
+    Creem el diccionari, realitzem els tests, i els avaluem
 """
 def main():
     diccionari = dict();
@@ -121,11 +115,9 @@ def main():
     readTest("test_2.txt", "test_2_out.txt", diccionari);
     # comparar gold_standard_1 amb test_1
     avaluacio1 = evaluate("test_1_out.txt", "gold_standard_1.txt")
+    print "Test 1:", avaluacio1*100, "% precisio";
     # comparar gold_standard_2 amb test_2
     avaluacio2 = evaluate("test_2_out.txt", "gold_standard_2.txt")
-
-    print "test_1", avaluacio1;
-    print "test_2", avaluacio2
-
+    print "Test 2:", avaluacio2*100, "% precisio";
 
 main();
