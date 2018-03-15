@@ -36,7 +36,7 @@ def getVector(N, frequents):
     # Creem un counter per guardar informacio de females i males
     count = Counter()
 
-    fileOut = open(str(N) + '-weka_input.arff','w')
+    fileOut = open(str(N) + '-weka_input.arff','a')
 
     # Bucle que itera sobre tots els arxius
     for fileName in files:
@@ -73,38 +73,34 @@ def getVector(N, frequents):
              fileOut.write(',' + gender)
         fileOut.write('\r\n')
 
+def generateWeka(N,frequent):
+    fileOut = open(str(N) + '-weka_input.arff','w')
+
+    info = "% 1. Title: Gender classification\r\n" + \
+    "%2. Sources:\r\n" + \
+    "% (a) CILN - Roman Rey, Sergi Sorigue\r\n\r\n" + \
+    "@RELATION gender\r\n"
+
+    for w in frequent:
+        info += "@ATTRIBUTE " + w + " NUMERIC\r\n"
+    info += "@ATTRIBUTE class {female,male}\r\n"
+    fileOut.write(info)
+    fileOut.close()
 
 def main():
     N = int(sys.argv[1])
 
     # 1 - Obtenim N mes frequents
     mostFrequent = getMostFrequent(N)
-    
-    # 2 - Obtenim feature vectors
+
+    # 2 - Generem el weka header
+    generateWeka(N,mostFrequent)
+
+    # 3 - Obtenim feature vectors
     getVector(N,mostFrequent)
-    # 3 - Utilitzar WEKA o scikit-learn i calcular la precisio
+
 
     # 4 - Variar valors de N i analitzar
-
-
-
-
-    """
-    print "Most common female: ", fCount.most_common(N);
-    print "Total female words: ", sum(fCount.values())
-    print "Most common male: ", mCount.most_common(N);
-    print "Total male words: ", sum(mCount.values())
-    """
-
-
-
-
-
-
-
-
-
-
 
 
 
