@@ -2,10 +2,10 @@ try:
     import Queue as Q
 except ImportError:
     import queue as Q
-import glob
+import glob,sys
 from collections import Counter
 
-def readData(fCount,mCount):
+def nFrequents(fCount,mCount):
 
     path = './dataset/*'
     files = glob.glob(path)
@@ -21,18 +21,20 @@ def readData(fCount,mCount):
             if fileName.endswith("_male"):
                 mCount += Counter(content.strip().split());
 
+def main():
+    N = int(sys.argv[1])
+    # Creem un counter per guardar informacio de females i males
+    fCount = Counter()
+    mCount = Counter()
+    # Obtenim N mes frequents
+    nFrequents(fCount,mCount)
 
-    print "Most common female: ", fCount.most_common(5);
+    print "Most common female: ", fCount.most_common(N);
     print "Total female words: ", sum(fCount.values())
-    print "Most common male: ", mCount.most_common(5);
+    print "Most common male: ", mCount.most_common(N);
     print "Total male words: ", sum(mCount.values())
 
-def main():
-    # Creem un counter per guardar informacio de females i males
-    countF = Counter()
-    countM = Counter()
-    # Llegim datasets
-    readData(countF,countM)
-
+    # Obtencio de feature vector
+    # primera posicio: [#, #Mayusculas, # NP]
 
 main();
