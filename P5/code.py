@@ -12,7 +12,7 @@ def getFrequentsAndVector(N):
     # Creem un counter per guardar informacio de females i males
     count = Counter()
 
-    fileOut = open('weka_input.arff','w')
+    fileOut = open(str(N) + '-eweka_input.arff','w')
 
     # Bucle que itera sobre tots els arxius
     for fileName in files:
@@ -59,8 +59,13 @@ def main():
     N = int(sys.argv[1])
     vec = []
 
-    # Obtenim N mes frequents i feature vectors
+    # 1 - Obtenim N mes frequents
     getFrequentsAndVector(N)
+    # 2 - Obtenim feature vectors (todo, separar de la funcio o posar dins de laltre)
+
+    # 3 - Utilitzar WEKA o scikit-learn i calcular la precisio
+
+    # 4 - Variar valors de N i analitzar
 
 
 
