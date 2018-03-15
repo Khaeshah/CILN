@@ -5,64 +5,83 @@ except ImportError:
 import glob,sys
 from collections import Counter
 
-def getFrequentsAndVector(N):
+
+
+def getMostFrequent(N):
+    path = './dataset/*'
+    files = glob.glob(path)
+    # Creem un counter per guardar informacio de females i males
+    dictionary = {}
+
+    # Bucle que itera sobre tots els arxius
+    for fileName in files:
+        with open(fileName) as file:
+            for line in file:
+                for word in line.split():
+                    if not dictionary.has_key(word):
+                        dictionary[word] = 1
+                    else:
+                        dictionary[word] += 1
+
+    sortedDic = sorted(dictionary, key=dictionary.get, reverse=True)
+    ret = [];
+    for i in range(0,N):
+        ret.append(sortedDic[i])
+    return ret
+
+def getVector(N, frequents):
 
     path = './dataset/*'
     files = glob.glob(path)
     # Creem un counter per guardar informacio de females i males
     count = Counter()
 
-    fileOut = open(str(N) + '-eweka_input.arff','w')
+    fileOut = open(str(N) + '-weka_input.arff','w')
 
     # Bucle que itera sobre tots els arxius
     for fileName in files:
+        dic = {}
+        totalWords = 0
+        # Creem el vector de tamany N per el WEKA
+        for w in frequents:
+            dic[w] = 0
+
+        # Asignem un gender. Si no es male ni female, no tindra gender
+        gender = ""
+        if fileName.endswith("_female"):
+            gender = "female"
+        elif fileName.endswith("_male"):
+            gender = "male"
+
         with open(fileName) as file:
-            content = file.read()
-            # Asignem un gender. Si no es male ni female, no tindra gender
-            gender = ""
-            if fileName.endswith("_female"):
-                gender = "female"
-            elif fileName.endswith("_male"):
-                gender = "male"
+            for line in file:
+                for word in line.split():
+                    totalWords += 1
+                    if word in frequents:
+                        dic[word] += 1
 
-            # Contem el nombre d aparicions utilitzant un counter
-            count = Counter(content.strip().split())
-            totalWords = sum(count.values())
-            temp = count.most_common(N);
-            aux = []
-
-            # Asignem el array amb la informacio que ens interessa
-            isFirst = 1
-            for common in temp:
-                if(common[1] != 0):
-                    value = str(float(common[1])/totalWords)
-                    if isFirst:
-                        fileOut.write(value);
-                        isFirst = 0
-                    else:
-                        fileOut.write(',' + value)
-
-            # Quan el text te menys paraules que la N, ho arreglem per igualar el vector
-            dif = N - len(temp)
-            while(dif):
-                fileOut.write(',0')
-                dif = dif-1;
-
-            # Afegim el genere de la persona
-            if(gender != ""):
-                 fileOut.write(',' + gender)
-            fileOut.write('\r\n')
-
+        isFirst = 1
+        for w in frequents:
+            value = str(float(dic[w])/totalWords)
+            if isFirst:
+                fileOut.write(value);
+                isFirst = 0
+            else:
+                fileOut.write(',' + value)
+        # Afegim el genere de la persona
+        if(gender != ""):
+             fileOut.write(',' + gender)
+        fileOut.write('\r\n')
 
 
 def main():
     N = int(sys.argv[1])
-    vec = []
 
     # 1 - Obtenim N mes frequents
-    getFrequentsAndVector(N)
-    # 2 - Obtenim feature vectors (todo, separar de la funcio o posar dins de laltre)
-
+    mostFrequent = getMostFrequent(N)
+    
+    # 2 - Obtenim feature vectors
+    getVector(N,mostFrequent)
     # 3 - Utilitzar WEKA o scikit-learn i calcular la precisio
 
     # 4 - Variar valors de N i analitzar
