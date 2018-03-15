@@ -82,7 +82,7 @@ def generateWeka(N,frequent):
     "@RELATION gender\r\n"
 
     for w in frequent:
-        info += "@ATTRIBUTE " + w + " NUMERIC\r\n"
+        info += "@ATTRIBUTE freq_" + w + " NUMERIC\r\n"
     info += "@ATTRIBUTE class {female,male}\r\n"
     fileOut.write(info)
     fileOut.close()
