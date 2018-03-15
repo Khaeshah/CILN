@@ -51,7 +51,7 @@ def getFrequentsAndVector(N):
             # Afegim el genere de la persona
             if(gender != ""):
                  fileOut.write(',' + gender)
-            fileOut.write('\r\n') 
+            fileOut.write('\r\n')
 
 
 
