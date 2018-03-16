@@ -103,6 +103,17 @@ def main():
     # 4 - Variar valors de N i analitzar
 
 
+
+
+
+
+
+
+
+
+
+
+
 main();
 
 
