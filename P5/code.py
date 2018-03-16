@@ -1,16 +1,10 @@
-try:
-    import Queue as Q
-except ImportError:
-    import queue as Q
-import glob,sys
-from collections import Counter
-
+import glob,re,sys
 
 
 def getMostFrequent(N):
     path = './dataset/*'
     files = glob.glob(path)
-    # Creem un counter per guardar informacio de females i males
+    # Creem un dict per guardar informacio de females i males
     dictionary = {}
 
     # Bucle que itera sobre tots els arxius
@@ -33,8 +27,6 @@ def getVector(N, frequents):
 
     path = './dataset/*'
     files = glob.glob(path)
-    # Creem un counter per guardar informacio de females i males
-    count = Counter()
 
     fileOut = open(str(N) + '-weka_input.arff','a')
 
@@ -53,6 +45,7 @@ def getVector(N, frequents):
         elif fileName.endswith("_male"):
             gender = "male"
 
+        # Contem el nombre d'aparicions de les paraules que ens interessen
         with open(fileName) as file:
             for line in file:
                 for word in line.split():
@@ -60,6 +53,7 @@ def getVector(N, frequents):
                     if word in frequents:
                         dic[word] += 1
 
+        # Tractem el output al fitxer
         isFirst = 1
         for w in frequents:
             value = str(float(dic[w])/totalWords)
@@ -75,15 +69,22 @@ def getVector(N, frequents):
 
 def generateWeka(N,frequent):
     fileOut = open(str(N) + '-weka_input.arff','w')
+    forbidden = ("?" , "!",'"', ",", ".", ";", ":")
 
     info = "% 1. Title: Gender classification\r\n" + \
+    "%\n" + \
     "%2. Sources:\r\n" + \
-    "% (a) CILN - Roman Rey, Sergi Sorigue\r\n\r\n" + \
+    "%\t(a) Creator: Roman Rey, Sergi Sorigue\r\n" + \
+    "%\t(b) Date: March, 2018 \r\n" + \
+    "%\r\n\r\n" + \
     "@RELATION gender\r\n"
 
     for w in frequent:
-        info += "@ATTRIBUTE freq_" + w + " NUMERIC\r\n"
+        #word = re.sub('[^A-Za-z0-9 ]+', '', w)
+        nWord = re.sub(r"[?|$|.|!|'|,|]",r'_',w)
+        info += "@ATTRIBUTE freq_" + nWord + " NUMERIC\r\n"
     info += "@ATTRIBUTE class {female,male}\r\n"
+    info += "@DATA\r\n"
     fileOut.write(info)
     fileOut.close()
 
@@ -99,10 +100,12 @@ def main():
     # 3 - Obtenim feature vectors
     getVector(N,mostFrequent)
 
-
     # 4 - Variar valors de N i analitzar
 
 
-
-
 main();
+
+
+# Mirar diferents precisions amb / sense signes de puntuacio, amb / sense majuscules, i amb / sense una combinacio de les dues
+# simple logistic, smo. a la pestanya select attributes
+# podem veure information gain. aqui sortiran les n paraules, podem treure conclusions. elem.lower()
