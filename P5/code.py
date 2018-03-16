@@ -1,6 +1,21 @@
 import glob,re,sys
 
 
+global punctuation
+punctuation = True;
+
+global caseSensitive
+caseSensitive = True;
+
+
+def computeFlags(word):
+
+    if(punctuation == False):
+        word = re.sub(r"[?|$|.|!|'|,|-|_|;|:|(|)|[|]",r'',word)
+    if(caseSensitive == False):
+        word = word.lower()
+    return word
+
 def getMostFrequent(N):
     path = './dataset/*'
     files = glob.glob(path)
@@ -12,6 +27,7 @@ def getMostFrequent(N):
         with open(fileName) as file:
             for line in file:
                 for word in line.split():
+                    word = computeFlags(word)
                     if not dictionary.has_key(word):
                         dictionary[word] = 1
                     else:
@@ -50,6 +66,7 @@ def getVector(N, frequents):
             for line in file:
                 for word in line.split():
                     totalWords += 1
+                    word = computeFlags(word)
                     if word in frequents:
                         dic[word] += 1
 
@@ -81,8 +98,13 @@ def generateWeka(N,frequent):
 
     for w in frequent:
         #word = re.sub('[^A-Za-z0-9 ]+', '', w)
-        nWord = re.sub(r"[?|$|.|!|'|,|]",r'_',w)
-        info += "@ATTRIBUTE freq_" + nWord + " NUMERIC\r\n"
+        #nWord = re.sub(r"[?|$|.|!|'|,|]",r'_',w)
+
+        nWordQuote = re.sub(r"[|'|]",r'_quote_',w)
+        nWordDQuote = re.sub(r'[|"|]',r'_double_quote_',nWordQuote)
+        nWordDot = re.sub(r'[|.|]',r'_dot_',nWordDQuote)
+        nWordComma = re.sub(r'[|,|]',r'_comma_',nWordDQuote)
+        info += "@ATTRIBUTE freq_" + nWordComma + " NUMERIC\r\n"
     info += "@ATTRIBUTE class {female,male}\r\n"
     info += "@DATA\r\n"
     fileOut.write(info)
@@ -91,6 +113,14 @@ def generateWeka(N,frequent):
 def main():
     N = int(sys.argv[1])
 
+    # Flag de signes de puntuacio o majuscules
+    for i in range(2,len(sys.argv)):
+        if sys.argv[i] == '-noPunctuation':
+            global punctuation
+            punctuation = False
+        if sys.argv[i] == '-noCaseSensitive':
+            global caseSensitive
+            caseSensitive = False
     # 1 - Obtenim N mes frequents
     mostFrequent = getMostFrequent(N)
 
@@ -101,6 +131,10 @@ def main():
     getVector(N,mostFrequent)
 
     # 4 - Variar valors de N i analitzar
+
+
+    #python code.py 5 [true] [true]
+
 
 
 
