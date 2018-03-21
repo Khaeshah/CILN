@@ -119,7 +119,7 @@ def checkFlags():
             global caseSensitive
             caseSensitive = False
         else:
-            sys.exit("Error. Incorrect Flags. Try with -noPunctuation and -noCaseSensitive")
+            sys.exit("Error. Incorrect Flags. Try with -noPunctuation and/or -noCaseSensitive")
     flags = "Executing program with "
     if punctuation:
         flags += "punctuation "
