@@ -1,6 +1,5 @@
 import glob,re,sys
 
-
 global punctuation
 punctuation = True;
 
@@ -110,17 +109,34 @@ def generateWeka(N,frequent):
     fileOut.write(info)
     fileOut.close()
 
-def main():
-    N = int(sys.argv[1])
-
+def checkFlags():
     # Flag de signes de puntuacio o majuscules
     for i in range(2,len(sys.argv)):
         if sys.argv[i] == '-noPunctuation':
             global punctuation
             punctuation = False
-        if sys.argv[i] == '-noCaseSensitive':
+        elif sys.argv[i] == '-noCaseSensitive':
             global caseSensitive
             caseSensitive = False
+        else:
+            sys.exit("Error. Incorrect Flags. Try with -noPunctuation and -noCaseSensitive")
+    flags = "Executing program with "
+    if punctuation:
+        flags += "punctuation "
+    else:
+        flags += "noPunctuation "
+    if caseSensitive:
+        flags += "and caseSensitive"
+    else:
+        flags += "and noCaseSensitive"
+    print flags
+
+def main():
+    N = int(sys.argv[1])
+
+    # Comprovem si els flags son correctes
+    checkFlags()
+
     # 1 - Obtenim N mes frequents
     mostFrequent = getMostFrequent(N)
 
@@ -130,27 +146,4 @@ def main():
     # 3 - Obtenim feature vectors
     getVector(N,mostFrequent)
 
-    # 4 - Variar valors de N i analitzar
-
-
-    #python code.py 5 [true] [true]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 main();
-
-
-# Mirar diferents precisions amb / sense signes de puntuacio, amb / sense majuscules, i amb / sense una combinacio de les dues
-# simple logistic, smo. a la pestanya select attributes
-# podem veure information gain. aqui sortiran les n paraules, podem treure conclusions. elem.lower()
