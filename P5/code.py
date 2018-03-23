@@ -8,7 +8,7 @@ caseSensitive = True;
 
 
 def computeFlags(word):
-
+    # Funcio per tractar els input flags
     if(punctuation == False):
         word = re.sub(r"[?|$|.|!|'|,|-|_|;|:|(|)|[|]",r'',word)
     if(caseSensitive == False):
@@ -16,6 +16,7 @@ def computeFlags(word):
     return word
 
 def getMostFrequent(N):
+    # Obtenim els N words mes frequents
     path = './dataset/*'
     files = glob.glob(path)
     # Creem un dict per guardar informacio de females i males
@@ -39,7 +40,7 @@ def getMostFrequent(N):
     return ret
 
 def getVector(N, frequents):
-
+    # Funcio per obtenir els feature vectors
     path = './dataset/*'
     files = glob.glob(path)
 
@@ -84,6 +85,7 @@ def getVector(N, frequents):
         fileOut.write('\r\n')
 
 def generateWeka(N,frequent):
+    # Funcio que genera els weka headers
     fileOut = open(str(N) + '-weka_input.arff','w')
     forbidden = ("?" , "!",'"', ",", ".", ";", ":")
 
@@ -96,9 +98,7 @@ def generateWeka(N,frequent):
     "@RELATION gender\r\n"
 
     for w in frequent:
-        #word = re.sub('[^A-Za-z0-9 ]+', '', w)
-        #nWord = re.sub(r"[?|$|.|!|'|,|]",r'_',w)
-
+        # Per cada word a frequents, arreglem que ho tracti com a numero el weka
         nWordQuote = re.sub(r"[|'|]",r'_quote_',w)
         nWordDQuote = re.sub(r'[|"|]',r'_double_quote_',nWordQuote)
         nWordDot = re.sub(r'[|.|]',r'_dot_',nWordDQuote)
@@ -134,13 +134,13 @@ def checkFlags():
 def main():
     N = int(sys.argv[1])
 
-    # Comprovem si els flags son correctes
+    # Comprovem si els input flags son correctes
     checkFlags()
 
     # 1 - Obtenim N mes frequents
     mostFrequent = getMostFrequent(N)
 
-    # 2 - Generem el weka header
+    # 2 - Generem el header weka del output
     generateWeka(N,mostFrequent)
 
     # 3 - Obtenim feature vectors
